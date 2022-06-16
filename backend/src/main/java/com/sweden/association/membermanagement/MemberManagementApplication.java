@@ -2,10 +2,10 @@ package com.sweden.association.membermanagement;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+import org.springframework.context.annotation.PropertySource;
 
 @SpringBootApplication
-@EnableJpaRepositories("com.sweden.association.membermanagement..repository")
+@PropertySource("classpath:application-${spring.profiles.active:prod}.properties")
 public class MemberManagementApplication {
 
 	public static void main(String[] args) {

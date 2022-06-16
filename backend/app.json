@@ -1,0 +1,8 @@
+{
+  "name": "member-management",
+  "buildpacks": [
+    {
+      "url": "heroku/jvm"
+    }
+  ]
+}
