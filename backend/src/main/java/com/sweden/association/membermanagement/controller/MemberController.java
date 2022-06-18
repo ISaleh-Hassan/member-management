@@ -1,7 +1,7 @@
 package com.sweden.association.membermanagement.controller;
 
 import com.sweden.association.membermanagement.model.Member;
-import com.sweden.association.membermanagement.repository.MemberRepository;
+import com.sweden.association.membermanagement.service.MemberService;
 import com.sweden.association.membermanagement.util.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -19,20 +19,20 @@ import java.util.List;
 @RequestMapping("/api/v1")
 public class MemberController {
     @Autowired
-    private MemberRepository memberRepository;
+    private MemberService memberService;
 
     @GetMapping("/members")
     public List<Member> getAllMembers() {
-        return memberRepository.findAll();
+        return memberService.getAllMembers();
     }
 
     @PostMapping("/members")
-    public void newEmployee(@RequestBody Member member) {
-        memberRepository.save(member);
+    public void addMember(@RequestBody Member member) {
+        memberService.addMember(member);
     }
 
     @GetMapping("/members/{id}")
     public Member getMemberById(@PathVariable Long id) throws Exception {
-        return memberRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Member with id " + id + " was not found"));
+        return memberService.getMemberById(id);
     }
 }
