@@ -20,8 +20,9 @@ import java.util.Objects;
 
 public class CsvHelper {
     // These columns represent the structure of the CSV file that the client will export from Swedbank
+    // Note: We accept only the english header
     public final static String[] VALID_HEADER =
-            new String[] {"Radnummer","Clearingnummer","Kontonummer","Produkt","Valuta","Bokföringsdag","Transaktionsdag","Valutadag","Referens","Beskrivning","Belopp","Bokfört saldo"};
+            new String[] {"Line number","Clearing number","Account number","Product","Currency","Booked date","Transaction date","Value date","Reference","Description","Amount","Booked balance"};
 
     public static List<String[]> readCsv(byte[] csvBytes, int skipLines) throws Exception {
         CSVParser parser = new CSVParserBuilder()
@@ -49,7 +50,7 @@ public class CsvHelper {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Csv rows shall not be null");
         }
         if(!Arrays.equals(VALID_HEADER, csvRows.get(1))){
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Csv header is not valid");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Csv header is not valid, please use the english file");
         }
     }
 

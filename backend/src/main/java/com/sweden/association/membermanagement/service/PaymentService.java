@@ -30,8 +30,8 @@ public class PaymentService {
     private PaymentRepository paymentRepository;
 
     public Map<String, List<SwishTransaction>> addPayment(MultipartFile selectedFile) {
-        List<String[]> transactions = tryReadCsvFile(selectedFile, 2);
         CsvHelper.isValidSwedbankCsvFile(tryReadCsvFile(selectedFile, 0));
+        List<String[]> transactions = tryReadCsvFile(selectedFile, 2);
         Map<String, List<SwishTransaction>> swishTransactions =  getMapOfAllSwishTransactions(transactions);
         //TODO: Add all transactions to the members in question. As for now we only return the list
         return swishTransactions;
