@@ -1,5 +1,7 @@
 package com.sweden.association.membermanagement.model;
 
+import com.opencsv.bean.CsvBindByName;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
