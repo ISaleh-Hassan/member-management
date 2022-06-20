@@ -2,8 +2,9 @@ package com.sweden.association.membermanagement.controller;
 
 import com.sweden.association.membermanagement.model.Member;
 import com.sweden.association.membermanagement.service.MemberService;
-import com.sweden.association.membermanagement.util.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -22,8 +23,8 @@ public class MemberController {
     private MemberService memberService;
 
     @GetMapping("/members")
-    public List<Member> getAllMembers() {
-        return memberService.getAllMembers();
+    public ResponseEntity<List<Member>> getAllMembers() {
+        return new ResponseEntity<>(memberService.getAllMembers(), HttpStatus.OK);
     }
 
     @PostMapping("/members")
@@ -32,7 +33,8 @@ public class MemberController {
     }
 
     @GetMapping("/members/{id}")
-    public Member getMemberById(@PathVariable Long id) throws Exception {
-        return memberService.getMemberById(id);
+    public ResponseEntity<Member> getMemberById(@PathVariable Long id) {
+        return new ResponseEntity<>(memberService.getMemberById(id), HttpStatus.OK);
+
     }
 }

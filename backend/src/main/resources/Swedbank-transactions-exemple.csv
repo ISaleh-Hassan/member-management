@@ -1,7 +1,9 @@
-* Transaktioner Period 2022-05-01�2022-05-31 Skapad 2022-06-12 13:27 CEST
-Radnummer,Clearingnummer,Kontonummer,Produkt,Valuta,Bokf�ringsdag,Transaktionsdag,Valutadag,Referens,Beskrivning,Belopp,Bokf�rt saldo
-45,81462,xxxxxxxxx,"Privatkonto",SEK,2022-05-27,2022-05-26,2022-05-27,"+4673xxx8740","Swish mottagen +46734555540",700.00,31479.34
-46,81462,xxxxxxxxx,"Privatkonto",SEK,2022-05-27,2022-05-26,2022-05-27,"+4673xxx8740","Swish mottagen +46734555740",700.00,31479.34
-47,81562,934347xxxx9,"Privatkonto",SEK,2022-05-05,2022-05-05,2022-05-05,"V?sttrafik To Go","Swish V?sttrafik To Go",-35.00,5044.29
-48,81562,934347xxxxx9,"Privatkonto",SEK,2022-05-04,2022-05-04,2022-05-04,"PARKERING G@TEB","PARKERING G@TEB",-5.00,5079.29
-49,81562,93434ddcv09,"Privatkonto",SEK,2022-05-04,2022-05-04,2022-05-04,"Al Mashi Grill A","Al Mashi Grill A",-548.00,5084.29
+* Transactions Period 2022-05-01–2022-05-30 Created 2022-06-19 18:48 CEST
+Line number,Clearing number,Account number,Product,Currency,Booked date,Transaction date,Value date,Reference,Description,Amount,Booked balance
+48,81462,xxxxxxxxx,"Privatkonto",SEK,2022-05-27,2022-05-26,2022-05-27,"+46734555540","Swish mottagen +46734555740",380.00,3149.34
+49,81562,xxxxxxxxx,"Privatkonto",SEK,2022-05-04,2022-05-04,2022-05-04,"PARKERING GÖTEB","PARKERING GÖTEB",-5.00,5079.29
+50,81562,xxxxxxxxx,"Privatkonto",SEK,2022-05-04,2022-05-04,2022-05-04,"Al Mashi Grill A","Al Mashi Grill A",-548.00,5084.29
+51,81562,xxxxxxxxx,"Privatkonto",SEK,2022-05-05,2022-05-05,2022-05-05,"Västtrafik To Go","Swish Västtrafik To Go",-35.00,5044.29
+52,81462,xxxxxxxxx,"Privatkonto",SEK,2022-05-27,2022-05-26,2022-05-27,"+46734555540","Swish mottagen +46734555540",550.00,3149.34
+52,81462,xxxxxxxxx,"Privatkonto",SEK,2022-05-26,2022-05-26,2022-05-26,"+46734555540","Swish mottagen +46734555540",650.00,3149.34
+52,81462,xxxxxxxxx,"Privatkonto",SEK,2022-05-26,2022-05-26,2022-05-26,"+46734555530","Swish mottagen +46734555530",650.00,3149.34

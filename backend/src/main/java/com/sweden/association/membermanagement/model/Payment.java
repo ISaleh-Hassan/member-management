@@ -1,5 +1,7 @@
 package com.sweden.association.membermanagement.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -9,7 +11,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import java.math.BigDecimal;
-import java.util.Date;
+import java.time.LocalDate;
 
 @Entity
 @Table(name = "payment")
@@ -23,11 +25,11 @@ public class Payment {
     private BigDecimal amount;
 
     @Column(name = "transaction_date", nullable = false)
-    private Date transactionDate;
+    private LocalDate transactionDate;
 
     @ManyToOne
     @JoinColumn(name = "member_id")
-    private Member memberPayments;
+    private Member payer;
 
     public BigDecimal getAmount() {
         return amount;
@@ -37,19 +39,28 @@ public class Payment {
         this.amount = amount;
     }
 
-    public Date getTransactionDate() {
+    public LocalDate  getTransactionDate() {
         return transactionDate;
     }
 
-    public void setTransactionDate(Date transactionDate) {
+    public void setTransactionDate(LocalDate  transactionDate) {
         this.transactionDate = transactionDate;
     }
 
-    public Member getMemberPayments() {
-        return memberPayments;
+    @JsonBackReference
+    public Member getPayer() {
+        return payer;
     }
 
-    public void setMemberPayments(Member memberPayments) {
-        this.memberPayments = memberPayments;
+    public void setPayer(Member payer) {
+        this.payer = payer;
+    }
+
+    public long getPaymentId() {
+        return paymentId;
+    }
+
+    public void setPaymentId(long paymentId) {
+        this.paymentId = paymentId;
     }
 }
