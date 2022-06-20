@@ -1,6 +1,7 @@
 package com.sweden.association.membermanagement.service;
 
-import com.sweden.association.membermanagement.helper.SwishTransaction;
+import com.sweden.association.membermanagement.model.Member;
+import com.sweden.association.membermanagement.model.Payment;
 import com.sweden.association.membermanagement.repository.PaymentRepository;
 import com.sweden.association.membermanagement.validtor.CsvHelper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,10 +11,10 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 import java.util.logging.Logger;
 
 import static com.sweden.association.membermanagement.validtor.CsvHelper.VALID_HEADER;
@@ -25,23 +26,32 @@ import static com.sweden.association.membermanagement.validtor.CsvHelper.validat
 @Service
 public class PaymentService {
     private static final Logger LOGGER = Logger.getLogger(PaymentService.class.getName());
+    public final static String UNKONWN = "UNKONWN";
 
     @Autowired
     private PaymentRepository paymentRepository;
+    @Autowired
+    private MemberService memberService;
 
-    public Map<String, List<SwishTransaction>> addPayment(MultipartFile selectedFile) {
+
+    public void addPayments(MultipartFile selectedFile) {
         CsvHelper.isValidSwedbankCsvFile(tryReadCsvFile(selectedFile, 0));
         List<String[]> transactions = tryReadCsvFile(selectedFile, 2);
-        Map<String, List<SwishTransaction>> swishTransactions =  getMapOfAllSwishTransactions(transactions);
-        //TODO: Add all transactions to the members in question. As for now we only return the list
-        return swishTransactions;
+        List<Payment> swishTransactions = getMapOfAllSwishTransactions(transactions);
+        swishTransactions.forEach(payment -> paymentRepository.save(payment));
     }
 
-    public static Map<String, List<SwishTransaction>> getMapOfAllSwishTransactions(List<String[]> transactions) {
-        Map<String, List<SwishTransaction>> map = new HashMap<>();
+    public List<Payment> getAllPayments(){
+        return paymentRepository.findAll();
+    }
+
+
+    private List<Payment> getMapOfAllSwishTransactions(List<String[]> transactions) {
+        List<Payment> payments = new ArrayList<>();
         transactions.forEach(transaction -> {
             if (transaction.length != VALID_HEADER.length) {
-                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "The format of the csv row is not valid");
+                LOGGER.warning(Arrays.toString(transaction));
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "The format of the transaction row is not valid");
             }
             String description = transaction[9];
 
@@ -49,11 +59,15 @@ public class PaymentService {
                 String mobileNumber = validateAndGetMobileNumber(transaction[8]);
                 String date = validateAndGetDate(transaction[7]);
                 BigDecimal amount = validateAndConvertAmount(transaction[10]);
-                // In case the member makes two payments in the same day, we add the total to the map
-                map.computeIfAbsent(mobileNumber, k -> new ArrayList<>()).add(new SwishTransaction(date, amount));
+                Member member = memberService.getOrCreateDefaultMember(mobileNumber);
+                Payment payment = new Payment();
+                payment.setAmount(amount);
+                payment.setTransactionDate(LocalDate.parse(date));
+                payment.setPayer(member);
+                payments.add(payment);
             }
         });
-        return map;
+        return payments;
     }
 
 }

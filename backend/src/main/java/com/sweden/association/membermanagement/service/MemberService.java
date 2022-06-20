@@ -10,6 +10,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
+import java.util.Objects;
+
+import static com.sweden.association.membermanagement.service.PaymentService.UNKONWN;
 
 @Service
 public class MemberService {
@@ -17,6 +20,7 @@ public class MemberService {
     private MemberRepository memberRepository;
 
     public List<Member> getAllMembers() {
+        List<Member> x = memberRepository.findAll();
         return memberRepository.findAll();
     }
 
@@ -26,5 +30,19 @@ public class MemberService {
 
     public Member getMemberById(@PathVariable Long id) {
         return memberRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Member with id " + id + " was not found"));
+    }
+
+    public Member getOrCreateDefaultMember(String mobileNumber) {
+        Member member = memberRepository.findByMobileNumber(mobileNumber);
+        if (Objects.isNull(member)) {
+            // We create a default member and the admin can edit it in the future
+            Member defaultMember = new Member();
+            defaultMember.setFirstName(UNKONWN);
+            defaultMember.setLastName(UNKONWN);
+            defaultMember.setMobileNumber(mobileNumber);
+            memberRepository.save(defaultMember);
+            member = memberRepository.findByMobileNumber(mobileNumber);
+        }
+        return member;
     }
 }

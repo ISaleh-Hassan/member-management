@@ -10,7 +10,6 @@ public class MemberDto {
     private String lastName;
     private String mobileNumber;
     private Boolean isAdmin;
-    private Boolean hasPaid;
     private Set<Payment> payments;
 
     public long getMemberId() {
@@ -51,14 +50,6 @@ public class MemberDto {
 
     public void setAdmin(Boolean admin) {
         isAdmin = admin;
-    }
-
-    public Boolean getHasPaid() {
-        return hasPaid;
-    }
-
-    public void setHasPaid(Boolean hasPaid) {
-        this.hasPaid = hasPaid;
     }
 
     public Set<Payment> getPayments() {

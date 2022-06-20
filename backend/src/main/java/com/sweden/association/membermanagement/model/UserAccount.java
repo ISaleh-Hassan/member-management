@@ -61,4 +61,12 @@ public class UserAccount {
     public void setEmail(String email) {
         this.email = email;
     }
+
+    public long getUserAccountId() {
+        return userAccountId;
+    }
+
+    public void setUserAccountId(long userAccountId) {
+        this.userAccountId = userAccountId;
+    }
 }

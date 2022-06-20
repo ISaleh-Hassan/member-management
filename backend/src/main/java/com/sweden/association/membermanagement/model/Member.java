@@ -1,5 +1,8 @@
 package com.sweden.association.membermanagement.model;
 
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -8,12 +11,24 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
-import java.util.Set;
+import java.util.List;
+import java.util.Objects;
 
 @Entity
 @Table(name = "member")
 public class Member {
 
+    public Member() {
+    }
+
+    public Member(long memberId, String firstName, String lastName, String mobileNumber, List<Payment> payments, UserAccount userAccount) {
+        this.memberId = memberId;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.mobileNumber = mobileNumber;
+        this.payments = payments;
+        this.userAccount = userAccount;
+    }
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "member_id")
@@ -25,22 +40,33 @@ public class Member {
     @Column(name = "last_name", nullable = false)
     private String lastName;
 
-    @Column(name = "mobile_number", nullable = false)
+    @Column(name = "mobile_number", nullable = false, unique = true)
     private String mobileNumber;
 
-    @Column(name = "is_admin", nullable = false)
-    private Boolean isAdmin;
-
-    @Column(name = "has_paid", nullable = false)
-    private Boolean hasPaid;
-
-    @OneToMany(mappedBy = "memberPayments")
-    private Set<Payment> payments;
+    @OneToMany(mappedBy = "payer")
+    @LazyCollection(LazyCollectionOption.FALSE)
+    private List<Payment> payments;
 
 
     @OneToOne(mappedBy = "memberUserAccount")
     private UserAccount userAccount;
 
+
+    public long getMemberId() {
+        return memberId;
+    }
+
+    public void setMemberId(long memberId) {
+        this.memberId = memberId;
+    }
+
+    public UserAccount getUserAccount() {
+        return userAccount;
+    }
+
+    public void setUserAccount(UserAccount userAccount) {
+        this.userAccount = userAccount;
+    }
 
     public String getFirstName() {
         return firstName;
@@ -66,27 +92,24 @@ public class Member {
         this.mobileNumber = mobileNumber;
     }
 
-    public Boolean getAdmin() {
-        return isAdmin;
-    }
-
-    public void setAdmin(Boolean admin) {
-        isAdmin = admin;
-    }
-
-    public Boolean getHasPaid() {
-        return hasPaid;
-    }
-
-    public void setHasPaid(Boolean hasPaid) {
-        this.hasPaid = hasPaid;
-    }
-
-    public Set<Payment> getPayments() {
+    public List<Payment> getPayments() {
         return payments;
     }
 
-    public void setPayments(Set<Payment> payments) {
+    public void setPayments(List<Payment> payments) {
         this.payments = payments;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Member)) return false;
+        Member member = (Member) o;
+        return memberId == member.memberId && Objects.equals(firstName, member.firstName) && Objects.equals(lastName, member.lastName) && Objects.equals(mobileNumber, member.mobileNumber) && Objects.equals(payments, member.payments) && Objects.equals(userAccount, member.userAccount);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(memberId, firstName, lastName, mobileNumber, payments, userAccount);
     }
 }
