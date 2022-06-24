@@ -16,7 +16,7 @@ public class UserAccountService {
     @Autowired
     UserAccountRepository userAccountRepository;
 
-    public Boolean Login(String userName, String password) {
+    public Boolean login(String userName, String password) {
         try {
             var sql = "select * from user_account where user_name =:userName and password = :password";
             final var query = entityManager.createNativeQuery(sql, UserAccount.class);

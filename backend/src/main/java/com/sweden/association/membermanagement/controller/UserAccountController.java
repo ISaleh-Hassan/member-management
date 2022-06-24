@@ -1,17 +1,11 @@
 package com.sweden.association.membermanagement.controller;
 
-import org.springframework.http.ResponseEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.http.HttpStatus;
-import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.server.ResponseStatusException;
 
 import com.sweden.association.membermanagement.service.UserAccountService;
 
@@ -25,7 +19,7 @@ public class UserAccountController {
   @GetMapping("/useraccounts/login")
   public Boolean login(@RequestParam String userName, @RequestParam String password) {
     try {
-      var status = userAccountService.Login(userName, password);
+      var status = userAccountService.login(userName, password);
       if (status) {
         return true;
       }
