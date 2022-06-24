@@ -3,7 +3,7 @@ package com.sweden.association.membermanagement.service;
 import com.sweden.association.membermanagement.model.Member;
 import com.sweden.association.membermanagement.model.Payment;
 import com.sweden.association.membermanagement.repository.PaymentRepository;
-import com.sweden.association.membermanagement.validtor.CsvHelper;
+import com.sweden.association.membermanagement.validator.CsvHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -17,16 +17,16 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Logger;
 
-import static com.sweden.association.membermanagement.validtor.CsvHelper.VALID_HEADER;
-import static com.sweden.association.membermanagement.validtor.CsvHelper.tryReadCsvFile;
-import static com.sweden.association.membermanagement.validtor.CsvHelper.validateAndConvertAmount;
-import static com.sweden.association.membermanagement.validtor.CsvHelper.validateAndGetDate;
-import static com.sweden.association.membermanagement.validtor.CsvHelper.validateAndGetMobileNumber;
+import static com.sweden.association.membermanagement.validator.CsvHelper.VALID_HEADER;
+import static com.sweden.association.membermanagement.validator.CsvHelper.tryReadCsvFile;
+import static com.sweden.association.membermanagement.validator.CsvHelper.validateAndConvertAmount;
+import static com.sweden.association.membermanagement.validator.CsvHelper.validateAndGetDate;
+import static com.sweden.association.membermanagement.validator.CsvHelper.validateAndGetMobileNumber;
 
 @Service
 public class PaymentService {
     private static final Logger LOGGER = Logger.getLogger(PaymentService.class.getName());
-    public final static String UNKONWN = "UNKONWN";
+    public final static String UNKONWN = "UNKNOWN";
 
     @Autowired
     private PaymentRepository paymentRepository;
