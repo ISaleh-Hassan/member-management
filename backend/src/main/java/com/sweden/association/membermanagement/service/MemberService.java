@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Objects;
 
 import static com.sweden.association.membermanagement.service.PaymentService.UNKONWN;
+import static com.sweden.association.membermanagement.validator.MemberValidator.validateMember;
 
 @Service
 public class MemberService {
@@ -25,6 +26,12 @@ public class MemberService {
     }
 
     public void addMember(@RequestBody Member member) {
+        validateMember(member);
+        Member dbMember = memberRepository.findByMobileNumber(member.getMobileNumber());
+        if(Objects.nonNull(dbMember)){
+            throw  new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                    String.format("A mobile number shall be unique. This number belong to %s %s", dbMember.getFirstName(), dbMember.getLastName()));
+        }
         memberRepository.save(member);
     }
 

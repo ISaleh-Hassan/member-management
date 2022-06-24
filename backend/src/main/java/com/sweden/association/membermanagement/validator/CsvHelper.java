@@ -73,11 +73,4 @@ public class CsvHelper {
         }
     }
 
-    //TODO: Use regex to validate the number
-    public static String validateAndGetMobileNumber(String strMobileNumber){
-        if(!(strMobileNumber.length() == 12) || (!strMobileNumber.contains("+467"))){
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "The mobile number is not valid. The number shall start with +467");
-        }
-        return strMobileNumber;
-    }
 }

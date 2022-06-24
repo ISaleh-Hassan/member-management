@@ -28,8 +28,13 @@ public class MemberController {
     }
 
     @PostMapping("/members")
-    public void addMember(@RequestBody Member member) {
-        memberService.addMember(member);
+    public ResponseEntity<String> addMember(@RequestBody Member member) {
+        try {
+            memberService.addMember(member);
+            return new ResponseEntity<>(null, HttpStatus.OK);
+        } catch (Exception ex){
+            return new ResponseEntity<>(ex.getMessage(), HttpStatus.OK);
+        }
     }
 
     @GetMapping("/members/{id}")
