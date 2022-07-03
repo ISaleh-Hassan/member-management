@@ -1,6 +1,8 @@
 package com.sweden.association.membermanagement.service;
 
+import com.sweden.association.membermanagement.dto.PaymentDto;
 import com.sweden.association.membermanagement.model.Member;
+import com.sweden.association.membermanagement.model.Payment;
 import com.sweden.association.membermanagement.repository.MemberRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -9,6 +11,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -21,8 +25,28 @@ public class MemberService {
     private MemberRepository memberRepository;
 
     public List<Member> getAllMembers() {
-        List<Member> x = memberRepository.findAll();
         return memberRepository.findAll();
+    }
+
+    public List<PaymentDto> getPaymentsOfAllMembers() {
+        List<PaymentDto> paymentDtos = new ArrayList<>();
+        memberRepository.findAll()
+                .forEach(member -> {
+                    List<Payment> memberPayments = member.getPayments();
+                    if (memberPayments.isEmpty()) {
+                        paymentDtos.add(new PaymentDto(String.format("%s %s", member.getFirstName(), member.getLastName()), member.getMobileNumber(), new BigDecimal(0), "-"));
+                    } else {
+                        memberPayments
+                                .forEach(payment -> {
+                                    PaymentDto paymentDto = new PaymentDto(String.format("%s %s", payment.getPayer().getFirstName(), payment.getPayer().getLastName()),
+                                            member.getMobileNumber(),
+                                            payment.getAmount(),
+                                            payment.getTransactionDate().toString());
+                                    paymentDtos.add(paymentDto);
+                                });
+                    }
+                });
+        return paymentDtos;
     }
 
     public void addMember(@RequestBody Member member) {

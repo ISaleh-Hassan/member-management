@@ -1,5 +1,6 @@
 package com.sweden.association.membermanagement.service;
 
+import com.sweden.association.membermanagement.dto.PaymentDto;
 import com.sweden.association.membermanagement.model.Member;
 import com.sweden.association.membermanagement.model.Payment;
 import com.sweden.association.membermanagement.repository.PaymentRepository;
@@ -42,6 +43,7 @@ public class PaymentService {
         //  If the client will pay for the application, we will make it possible to save historical payments
         deleteAllPayments();
         swishTransactions.forEach(payment -> paymentRepository.save(payment));
+
     }
 
     public List<Payment> getAllPayments(){
@@ -51,7 +53,6 @@ public class PaymentService {
     public void deleteAllPayments(){
         paymentRepository.deleteAll();
     }
-
 
     private List<Payment> getMapOfAllSwishTransactions(List<String[]> transactions) {
         List<Payment> payments = new ArrayList<>();

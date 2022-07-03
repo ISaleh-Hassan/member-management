@@ -1,5 +1,6 @@
 package com.sweden.association.membermanagement.controller;
 
+import com.sweden.association.membermanagement.dto.PaymentDto;
 import com.sweden.association.membermanagement.model.Member;
 import com.sweden.association.membermanagement.service.MemberService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,11 +12,15 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
-@CrossOrigin(origins = "http://localhost:3000")
+@CrossOrigin(origins = {"https://localhost:3000", "http://localhost:3000"})
 @RestController
 @RequestMapping("/api/v1")
 public class MemberController {
@@ -37,9 +42,19 @@ public class MemberController {
         }
     }
 
+
+    @GetMapping(path = "/members/all-payments")
+    @ResponseBody
+    public ResponseEntity<List<PaymentDto>> getAllMemberPayments() {
+        try {
+            return new ResponseEntity<>(memberService.getPaymentsOfAllMembers(), HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+        }
+    }
+
     @GetMapping("/members/{id}")
     public ResponseEntity<Member> getMemberById(@PathVariable Long id) {
         return new ResponseEntity<>(memberService.getMemberById(id), HttpStatus.OK);
-
     }
 }

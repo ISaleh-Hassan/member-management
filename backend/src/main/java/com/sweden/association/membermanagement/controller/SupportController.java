@@ -3,11 +3,11 @@ package com.sweden.association.membermanagement.controller;
 
 import com.sweden.association.membermanagement.model.Payment;
 import com.sweden.association.membermanagement.service.PaymentService;
+import com.sweden.association.membermanagement.validator.CsvHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -19,35 +19,25 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
 import java.util.logging.Logger;
 
+import static com.sweden.association.membermanagement.validator.CsvHelper.tryReadCsvFile;
+
 @CrossOrigin(origins = {"https://localhost:3000", "http://localhost:3000"})
 @RestController
 @RequestMapping("/api/v1")
-public class PaymentController {
-    private static final Logger LOGGER = Logger.getLogger(PaymentController.class.getName());
+public class SupportController {
+    private static final Logger LOGGER = Logger.getLogger(SupportController.class.getName());
 
     @Autowired
     private PaymentService paymentService;
 
-    @RequestMapping(path = "/payments", method = RequestMethod.POST, consumes = { "multipart/form-data" })
-    @ResponseBody
-    public ResponseEntity<Void> addPayments(@RequestParam MultipartFile selectedFile) {
+    @RequestMapping(path = "/support/validate-csv", method = RequestMethod.POST, consumes = { "multipart/form-data" })
+    public ResponseEntity<String> validateCsvFile(@RequestParam MultipartFile selectedFile) {
         try {
-            paymentService.addPayments(selectedFile);
+            CsvHelper.isValidSwedbankCsvFile(tryReadCsvFile(selectedFile, 0));
             return new ResponseEntity<>(null, HttpStatus.OK);
         } catch (Exception e) {
             LOGGER.warning("Something went wrong when trying to add payment  " +   e);
-            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
-     }
-
-    @GetMapping(path = "/payments")
-    public ResponseEntity<List<Payment>> getAllPayments() {
-        return new ResponseEntity<>(paymentService.getAllPayments(), HttpStatus.OK);
-    }
-
-    @DeleteMapping(path = "/payments")
-    public ResponseEntity<List<Payment>> deleteAllPayments() {
-        paymentService.deleteAllPayments();
-        return new ResponseEntity<>(paymentService.getAllPayments(), HttpStatus.OK);
     }
 }

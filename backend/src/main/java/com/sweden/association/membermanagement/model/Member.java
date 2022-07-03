@@ -18,17 +18,6 @@ import java.util.Objects;
 @Table(name = "member")
 public class Member {
 
-    public Member() {
-    }
-
-    public Member(long memberId, String firstName, String lastName, String mobileNumber, List<Payment> payments, UserAccount userAccount) {
-        this.memberId = memberId;
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.mobileNumber = mobileNumber;
-        this.payments = payments;
-        this.userAccount = userAccount;
-    }
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "member_id")
