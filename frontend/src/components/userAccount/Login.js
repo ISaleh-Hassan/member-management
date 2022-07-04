@@ -1,13 +1,20 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+
 import "./Login.css";
-import loginAsync from "../../services/AdminService";
+// import loginAsync from "../../services/AdminService";
+import UserAccountService from "../../services/UserAccountService";
 function Login() {
   const [userName, setUserName] = useState("");
   const [password, setPassword] = useState("");
+  const navigate = useNavigate();
 
   const login = (e) => {
     e.preventDefault();
-    loginAsync(userName, password);
+    UserAccountService.loginAsync(userName, password);
+    if (localStorage.getItem("jwtToken")) {
+      navigate("member-payment-management");
+    }
   };
 
   return (
