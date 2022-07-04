@@ -1,14 +1,13 @@
 import React from "react";
 import "./App.css";
-import LoginIndex from "./components/admin/admin"
-import FileUploader from "./components/fileUploader/FileUploader";
+import LoginIndex from "./components/admin/Login"
+import MemeberPayments from "./components/member/MemberPayments";
 import {
   BrowserRouter as Router,
   Routes,
   Route,
   Link
 } from "react-router-dom";
-import MemeberPayments from "./components/member/MemberPayments";
 function App() {
   return (
     <div className="App">
