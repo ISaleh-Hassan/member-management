@@ -7,8 +7,9 @@ import java.util.Map;
 import java.util.function.Function;
 
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
+
+import com.sweden.association.membermanagement.model.UserAccount;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -41,9 +42,9 @@ public class JwtUtility implements Serializable {
         return extractExpiration(token).before(new Date());
     }
 
-    public String generateToken(UserDetails userDetails) {
+    public String generateToken(UserAccount userAccount) {
         Map<String, Object> claims = new HashMap<>();
-        return createToken(claims, userDetails.getUsername());
+        return createToken(claims, userAccount.getUserName());
     }
 
     private String createToken(Map<String, Object> claims, String subject) {
@@ -53,8 +54,8 @@ public class JwtUtility implements Serializable {
                 .signWith(SignatureAlgorithm.HS256, secretKey).compact();
     }
 
-    public Boolean validateToken(String token, UserDetails userDetails) {
+    public Boolean validateToken(String token, UserAccount userAccount) {
         final String username = extractUsername(token);
-        return (username.equals(userDetails.getUsername()) && !isTokenExpired(token));
+        return (username.equals(userAccount.getUserName()) && !isTokenExpired(token));
     }
 }
