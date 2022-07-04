@@ -1,5 +1,6 @@
 package com.sweden.association.membermanagement.controller;
 
+import com.sweden.association.membermanagement.dto.PaymentDto;
 import com.sweden.association.membermanagement.model.Member;
 import com.sweden.association.membermanagement.service.MemberService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -28,8 +30,24 @@ public class MemberController {
     }
 
     @PostMapping("/members")
-    public void addMember(@RequestBody Member member) {
-        memberService.addMember(member);
+    public ResponseEntity<String> addMember(@RequestBody Member member) {
+        try {
+            memberService.addMember(member);
+            return new ResponseEntity<>(null, HttpStatus.OK);
+        } catch (Exception ex){
+            return new ResponseEntity<>(ex.getMessage(), HttpStatus.OK);
+        }
+    }
+
+
+    @GetMapping(path = "/members/all-payments")
+    @ResponseBody
+    public ResponseEntity<List<PaymentDto>> getAllMemberPayments() {
+        try {
+            return new ResponseEntity<>(memberService.getPaymentsOfAllMembers(), HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+        }
     }
 
     @GetMapping("/members/{id}")

@@ -7,7 +7,7 @@ import org.springframework.web.server.ResponseStatusException;
 import java.util.Objects;
 
 public class MemberValidator {
-    public static void ValidateMember(Member member) {
+    public static void validateMember(Member member) {
         if(Objects.isNull(member)) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "The user was not sent in the request");
         }
@@ -23,12 +23,13 @@ public class MemberValidator {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Mobile number is missed");
         }
 
-        if(isValidSwedishMobileNumber(member.getMobileNumber()) ) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Mobile number is missed");
-        }
+        validateAndGetMobileNumber(member.getMobileNumber());
     }
 
-    private static boolean isValidSwedishMobileNumber(String mobileNumber){
-        return false;
+    //TODO: Use regex to validate the number
+    public static void validateAndGetMobileNumber(String strMobileNumber){
+        if(!(strMobileNumber.length() == 12) || (!strMobileNumber.contains("+467"))){
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "The mobile number is not valid. The number shall start with +467");
+        }
     }
 }

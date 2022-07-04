@@ -1,5 +1,6 @@
 package com.sweden.association.membermanagement.service;
 
+import com.sweden.association.membermanagement.dto.PaymentDto;
 import com.sweden.association.membermanagement.model.Member;
 import com.sweden.association.membermanagement.model.Payment;
 import com.sweden.association.membermanagement.repository.PaymentRepository;
@@ -21,7 +22,7 @@ import static com.sweden.association.membermanagement.validator.CsvHelper.VALID_
 import static com.sweden.association.membermanagement.validator.CsvHelper.tryReadCsvFile;
 import static com.sweden.association.membermanagement.validator.CsvHelper.validateAndConvertAmount;
 import static com.sweden.association.membermanagement.validator.CsvHelper.validateAndGetDate;
-import static com.sweden.association.membermanagement.validator.CsvHelper.validateAndGetMobileNumber;
+import static com.sweden.association.membermanagement.validator.MemberValidator.validateAndGetMobileNumber;
 
 @Service
 public class PaymentService {
@@ -38,13 +39,20 @@ public class PaymentService {
         CsvHelper.isValidSwedbankCsvFile(tryReadCsvFile(selectedFile, 0));
         List<String[]> transactions = tryReadCsvFile(selectedFile, 2);
         List<Payment> swishTransactions = getMapOfAllSwishTransactions(transactions);
+        // TODO: As for now, we need to clear the db before adding new payments due to the limitation we have in the db.
+        //  If the client will pay for the application, we will make it possible to save historical payments
+        deleteAllPayments();
         swishTransactions.forEach(payment -> paymentRepository.save(payment));
+
     }
 
     public List<Payment> getAllPayments(){
         return paymentRepository.findAll();
     }
 
+    public void deleteAllPayments(){
+        paymentRepository.deleteAll();
+    }
 
     private List<Payment> getMapOfAllSwishTransactions(List<String[]> transactions) {
         List<Payment> payments = new ArrayList<>();
@@ -56,10 +64,10 @@ public class PaymentService {
             String description = transaction[9];
 
             if (description.contains("Swish mottagen")) {
-                String mobileNumber = validateAndGetMobileNumber(transaction[8]);
+                validateAndGetMobileNumber(transaction[8]);
                 String date = validateAndGetDate(transaction[7]);
                 BigDecimal amount = validateAndConvertAmount(transaction[10]);
-                Member member = memberService.getOrCreateDefaultMember(mobileNumber);
+                Member member = memberService.getOrCreateDefaultMember(transaction[8]);
                 Payment payment = new Payment();
                 payment.setAmount(amount);
                 payment.setTransactionDate(LocalDate.parse(date));
