@@ -26,6 +26,9 @@ public class UserAccount {
     @Column(name = "email", nullable = false)
     private String email;
 
+    @Column(name = "is_admin", nullable = false)
+    private Boolean isAdmin;
+
     @OneToOne()
     @JoinColumn(name = "member_id")
     private Member memberUserAccount;
@@ -68,5 +71,12 @@ public class UserAccount {
 
     public void setUserAccountId(long userAccountId) {
         this.userAccountId = userAccountId;
+    }
+    public Boolean getIsAdmin() {
+        return isAdmin;
+    }
+
+    public void setIsAdmin(Boolean isAdmin) {
+        this.isAdmin = isAdmin;
     }
 }

@@ -1,6 +1,7 @@
 import React from "react";
 import "./App.css";
-import LoginIndex from "./components/userAccount/Login"
+import Login from "./components/userAccount/Login"
+import Registration from "./components/userAccount/Registration"
 import MemeberPayments from "./components/member/MemberPayments";
 import {
   BrowserRouter as Router,
@@ -19,13 +20,18 @@ function App() {
               <Link to="/">Login</Link>
             </li>
             <li>
+              <Link to="/Registration">Register</Link>
+            </li>
+            <li>
               <Link to="/member-payment-management">Member payments</Link>
             </li>
+            
           </ul>
         </nav>
 
         <Routes>
-          <Route exact path="/" element={ <LoginIndex />} />
+          <Route exact path="/" element={ <Login />} />
+          <Route exact path="/Registration" element={ <Registration />} />
           <Route path="/member-payment-management" element={ <MemeberPayments />} />
         </Routes>
       </div>
