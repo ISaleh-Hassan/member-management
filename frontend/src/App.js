@@ -1,6 +1,6 @@
 import React from "react";
 import "./App.css";
-import Login from "./components/admin/index"
+import LoginIndex from "./components/admin/admin"
 import FileUploader from "./components/fileUploader/FileUploader";
 import {
   BrowserRouter as Router,
@@ -26,7 +26,7 @@ function App() {
         </nav>
 
         <Routes>
-          <Route exact path="/" element={ <Login />} />
+          <Route exact path="/" element={ <LoginIndex />} />
           <Route path="/member-payment-management" element={ <MemeberPayments />} />
         </Routes>
       </div>

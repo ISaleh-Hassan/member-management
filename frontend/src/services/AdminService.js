@@ -1,4 +1,5 @@
 import axios from "axios";
+import {setGlobalState, useGlobalState} from '../state';
 export default async function loginAsync(userName, password) {
   axios
     .get("http://localhost:8083/api/v1/useraccounts/login", {
@@ -7,10 +8,10 @@ export default async function loginAsync(userName, password) {
     .then((res) => {
       console.log(res);
       if(res.status === 200 && res.data === true){
-        console.log("inloggad!")
+        setGlobalState("isAuthenticated", true);
       }
       else{
-        console.log("fel användarnamn eller lösenord");
+        alert("fel användarnamn eller lösenord");
       }
     })
     .catch((err) => {
