@@ -1,6 +1,7 @@
 package com.sweden.association.membermanagement.utility;
 
 import java.io.Serializable;
+import java.util.Base64;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -19,7 +20,7 @@ import io.jsonwebtoken.SignatureAlgorithm;
 public class JwtUtility implements Serializable {
 
     @Value("${jwt.secret}")
-    private String secretKey;
+    private String secretKey = "HRlELXqpSB";
 
     public String extractUsername(String token) {
         return extractClaim(token, Claims::getSubject);
@@ -51,7 +52,7 @@ public class JwtUtility implements Serializable {
 
         return Jwts.builder().setClaims(claims).setSubject(subject).setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 10))
-                .signWith(SignatureAlgorithm.HS256, secretKey).compact();
+                .signWith(SignatureAlgorithm.HS256,Base64.getEncoder().encodeToString(secretKey.getBytes())).compact();
     }
 
     public Boolean validateToken(String token, UserAccount userAccount) {
