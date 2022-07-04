@@ -10,13 +10,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
-import org.springframework.security.access.SecurityConfig;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.userdetails.UserDetails;
+
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+
+import com.sweden.association.membermanagement.model.UserAccount;
 import com.sweden.association.membermanagement.service.UserAccountService;
 import com.sweden.association.membermanagement.utility.JwtRequest;
 import com.sweden.association.membermanagement.utility.JwtResponse;
@@ -32,36 +30,22 @@ public class UserAccountController {
   @Autowired
   private JwtUtility jwtUtility;
 
-
-  private AuthenticationManager authenticationManager;
-
   @GetMapping("/user-accounts/login")
-  public Boolean login(@RequestParam String userName, @RequestParam String password) {
+  public JwtResponse login(@RequestParam String userName, @RequestParam String password) {
+    var response = new JwtResponse();
     try {
-      var status = userAccountService.login(userName, password);
-      if (status) {
-        return true;
-      }
-      return false;
+       response = userAccountService.login(userName, password);
+      return response;
     } catch (Exception ex) {
       // return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-      return false;
+      return response;
     }
   }
 
   @PostMapping("/authenticate")
   public JwtResponse authenticate(@RequestBody JwtRequest jwtRequest) throws Exception {
-    try {
-
-      authenticationManager.authenticate(
-          new UsernamePasswordAuthenticationToken(
-              jwtRequest.getUsername(),
-              jwtRequest.getPassword()));
-    } catch (BadCredentialsException ex) {
-      throw new Exception("INVALID_CREDENTIALS", ex);
-    }
-    final UserDetails userDetails = userAccountService.loadUserByUsername(jwtRequest.getUsername());
-    final String token = jwtUtility.generateToken(userDetails);
+   
+    final String token = jwtUtility.generateToken(new UserAccount());
     return new JwtResponse(token);
   }
 }
