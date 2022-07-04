@@ -2,33 +2,41 @@ package com.sweden.association.membermanagement.service;
 
 import javax.persistence.EntityManager;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
-
 import com.sweden.association.membermanagement.model.UserAccount;
 import com.sweden.association.membermanagement.repository.UserAccountRepository;
 
 @Service
-public class UserAccountService {
+public class UserAccountService implements UserDetailsService {
 
     @Autowired
-    EntityManager entityManager;
-
-    @Autowired
-    UserAccountRepository userAccountRepository;
+    private UserAccountRepository userAccountRepository;
 
     public Boolean login(String userName, String password) {
         try {
-            var sql = "select * from user_account where user_name =:userName and password = :password";
-            final var query = entityManager.createNativeQuery(sql, UserAccount.class);
-            query.setParameter("userName", userName);
-            query.setParameter("password", password);
-            var result = query.getSingleResult();
-            if (result == null) {
+            UserAccount userAccount = userAccountRepository.findByUserNameAndPassword(userName, password);
+            if (userAccount == null) {
                 return false;
             }
             return true;
         } catch (Exception ex) {
             return false;
+        }
+    }
+
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        try {
+            var userAccount = userAccountRepository.findByUserName(username);
+            User user = new User(userAccount.getUserName(), userAccount.getPassword(), null);
+            return user;
+        } catch (Exception e) {
+            return null;
         }
     }
 }
