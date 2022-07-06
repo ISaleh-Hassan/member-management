@@ -1,6 +1,7 @@
 package com.sweden.association.membermanagement.dto;
 
 import com.sweden.association.membermanagement.model.Payment;
+import com.sweden.association.membermanagement.model.UserAccount;
 
 import java.util.Set;
 
@@ -11,6 +12,15 @@ public class MemberDto {
     private String mobileNumber;
     private Boolean isAdmin;
     private Set<Payment> payments;
+    private UserAccount userAccount;
+
+    public UserAccount getUserAccount() {
+        return userAccount;
+    }
+
+    public void setUserAccount(UserAccount userAccount) {
+        this.userAccount = userAccount;
+    }
 
     public long getMemberId() {
         return memberId;

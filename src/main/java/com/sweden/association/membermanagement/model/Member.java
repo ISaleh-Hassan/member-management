@@ -3,6 +3,7 @@ package com.sweden.association.membermanagement.model;
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -23,23 +24,21 @@ public class Member {
     @Column(name = "member_id")
     private long memberId;
 
-    @Column(name = "first_name", nullable = false)
+    @Column(name = "first_name", nullable = false, length = 50)
     private String firstName;
 
-    @Column(name = "last_name", nullable = false)
+    @Column(name = "last_name", nullable = false, length = 50)
     private String lastName;
 
-    @Column(name = "mobile_number", nullable = false, unique = true)
+    @Column(name = "mobile_number", nullable = false, unique = true, length = 12)
     private String mobileNumber;
 
     @OneToMany(mappedBy = "payer")
     @LazyCollection(LazyCollectionOption.FALSE)
     private List<Payment> payments;
 
-
-    @OneToOne(mappedBy = "memberUserAccount")
+    @OneToOne(mappedBy = "memberUserAccount", cascade = {CascadeType.ALL})
     private UserAccount userAccount;
-
 
     public long getMemberId() {
         return memberId;
@@ -91,10 +90,14 @@ public class Member {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof Member)) return false;
+        if (this == o)
+            return true;
+        if (!(o instanceof Member))
+            return false;
         Member member = (Member) o;
-        return memberId == member.memberId && Objects.equals(firstName, member.firstName) && Objects.equals(lastName, member.lastName) && Objects.equals(mobileNumber, member.mobileNumber) && Objects.equals(payments, member.payments) && Objects.equals(userAccount, member.userAccount);
+        return memberId == member.memberId && Objects.equals(firstName, member.firstName)
+                && Objects.equals(lastName, member.lastName) && Objects.equals(mobileNumber, member.mobileNumber)
+                && Objects.equals(payments, member.payments) && Objects.equals(userAccount, member.userAccount);
     }
 
     @Override

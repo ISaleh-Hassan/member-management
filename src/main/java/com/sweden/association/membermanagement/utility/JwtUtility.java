@@ -45,18 +45,18 @@ public class JwtUtility implements Serializable {
 
     public String generateToken(UserAccount userAccount) {
         Map<String, Object> claims = new HashMap<>();
-        return createToken(claims, userAccount.getUserName());
+        return createToken(claims, userAccount.getUsername());
     }
 
     private String createToken(Map<String, Object> claims, String subject) {
 
         return Jwts.builder().setClaims(claims).setSubject(subject).setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 10))
-                .signWith(SignatureAlgorithm.HS256,Base64.getEncoder().encodeToString(secretKey.getBytes())).compact();
+                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 15)) // set 15 minutes
+                .signWith(SignatureAlgorithm.HS256, Base64.getEncoder().encodeToString(secretKey.getBytes())).compact();
     }
 
     public Boolean validateToken(String token, UserAccount userAccount) {
         final String username = extractUsername(token);
-        return (username.equals(userAccount.getUserName()) && !isTokenExpired(token));
+        return (username.equals(userAccount.getUsername()) && !isTokenExpired(token));
     }
 }

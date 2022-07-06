@@ -3,11 +3,13 @@ package com.sweden.association.membermanagement.repository;
 import com.sweden.association.membermanagement.model.UserAccount;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.lang.NonNull;
-import org.springframework.stereotype.Repository;
-
 
 public interface UserAccountRepository extends JpaRepository<UserAccount, Long> {
-    UserAccount findByUserNameAndPassword(@NonNull String userName, @NonNull String password);
-    UserAccount findByUserName(@NonNull String userName);
+    UserAccount findByUsernameAndPassword(@NonNull String username, @NonNull String password);
 
+    UserAccount findByUsername(@NonNull String username);
+
+    UserAccount findByEmail(@NonNull String email);
+
+    UserAccount findByVerificationToken(@NonNull String verificationToken);
 }

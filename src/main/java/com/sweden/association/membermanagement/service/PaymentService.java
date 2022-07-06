@@ -1,6 +1,5 @@
 package com.sweden.association.membermanagement.service;
 
-import com.sweden.association.membermanagement.dto.PaymentDto;
 import com.sweden.association.membermanagement.model.Member;
 import com.sweden.association.membermanagement.model.Payment;
 import com.sweden.association.membermanagement.repository.PaymentRepository;

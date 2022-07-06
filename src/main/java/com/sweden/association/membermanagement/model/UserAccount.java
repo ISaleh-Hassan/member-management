@@ -1,5 +1,7 @@
 package com.sweden.association.membermanagement.model;
 
+import java.sql.Timestamp;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -17,28 +19,45 @@ public class UserAccount {
     @Column(name = "user_account_id")
     private long userAccountId;
 
-    @Column(name = "user_name", nullable = false)
-    private String userName;
+    @Column(name = "username", nullable = false, length= 50)
+    private String username;
 
-    @Column(name = "password", nullable = false)
+    @Column(name = "password", nullable = false, length = 16)
     private String password;
 
-    @Column(name = "email", nullable = false)
+    @Column(name = "email", nullable = false, length = 100)
     private String email;
 
     @Column(name = "is_admin", nullable = false)
     private Boolean isAdmin;
 
+    @Column(name = "is_activated", nullable = false)
+    private Boolean isActivated;
+
+    @Column(name = "verification_token", nullable = false)
+    private String verificationToken;
+
+    @Column(name = "verification_token_expiry_date", nullable = false)
+    private Timestamp verificationTokenExpiryDate;;
+
+    public Boolean getIsActivated() {
+        return isActivated;
+    }
+
+    public void setIsActivated(Boolean isActivated) {
+        this.isActivated = isActivated;
+    }
+
     @OneToOne()
     @JoinColumn(name = "member_id")
     private Member memberUserAccount;
 
-    public String getUserName() {
-        return userName;
+    public String getUsername() {
+        return username;
     }
 
-    public void setUserName(String userName) {
-        this.userName = userName;
+    public void setUserName(String username) {
+        this.username = username;
     }
 
     public String getPassword() {
@@ -72,11 +91,28 @@ public class UserAccount {
     public void setUserAccountId(long userAccountId) {
         this.userAccountId = userAccountId;
     }
+
     public Boolean getIsAdmin() {
         return isAdmin;
     }
 
     public void setIsAdmin(Boolean isAdmin) {
         this.isAdmin = isAdmin;
+    }
+
+    public String getVerificationToken() {
+        return verificationToken;
+    }
+
+    public void setVerificationToken(String verificationToken) {
+        this.verificationToken = verificationToken;
+    }
+
+    public Timestamp getVerificationTokenExpiryDate() {
+        return verificationTokenExpiryDate;
+    }
+
+    public void setVerificationTokenExpiryDate(Timestamp verificationTokenExpiryDate) {
+        this.verificationTokenExpiryDate = verificationTokenExpiryDate;
     }
 }
