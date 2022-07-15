@@ -1,4 +1,4 @@
-FROM maven:4-jdk-11
+FROM maven:3-jdk-11
 ADD . /member-management
 WORKDIR /member-management
 
@@ -8,7 +8,7 @@ RUN ls -l
 # Run Maven build
 RUN mvn clean install -X
 
-FROM openjdk:15
+FROM openjdk:11
 MAINTAINER Saleh and Carl
 VOLUME /tmp
 
