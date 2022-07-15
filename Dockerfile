@@ -9,15 +9,7 @@ RUN ls -l
 RUN mvn clean install
 
 FROM openjdk:11
-MAINTAINER Saleh and Carl
-VOLUME /tmp
 
-# Add Spring Boot app.jar to Container
-COPY --from=0 "/member-management/target/member-management-*-SNAPSHOT.jar" app.jar
-
-# Fire up our Spring Boot app by default
-CMD [ "sh", "-c", "java $JAVA_OPTS -Djava.security.egd=file:/dev/./urandom -jar /app.jar" ]
-
-#ADD target/member-management-0.0.1-SNAPSHOT.jar member-management.jar
-#ENTRYPOINT ["java", "-jar", "member-management.jar"]
+ADD target/member-management-0.0.1-SNAPSHOT.jar member-management.jar
+ENTRYPOINT ["java", "-jar", "member-management.jar"]
 EXPOSE 8083
