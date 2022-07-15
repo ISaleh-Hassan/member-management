@@ -5,6 +5,15 @@ public class JwtResponse {
     private Boolean mobileNumberExists;
     private Boolean usernameExists;
     private Boolean emailExists;
+    private Boolean userRegisteredSuccess;
+
+    public Boolean getUserRegisteredSuccess() {
+        return userRegisteredSuccess;
+    }
+
+    public void setUserRegisteredSuccess(Boolean userRegisteredSuccess) {
+        this.userRegisteredSuccess = userRegisteredSuccess;
+    }
 
     public Boolean getMobileNumberExists() {
         return mobileNumberExists;

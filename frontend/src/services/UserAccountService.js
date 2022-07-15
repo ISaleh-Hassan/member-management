@@ -19,6 +19,9 @@ const UserAccountService = {
         return false;
       });
   },
+  logoutAsync: async function () {
+    sessionStorage.removeItem("jwtToken");
+  },
 
   registerAsync: async function (
     firstname,
@@ -48,11 +51,10 @@ const UserAccountService = {
         console.log(res);
         if (
           res.status === 200 &&
-          res.data.jwtToken != null &&
-          !res.data.usernameExists &&
-          !res.data.emailExists
+          /*res.data.jwtToken != null &&*/
+          res.data.userRegisteredSuccess
         ) {
-          sessionStorage.setItem("jwtToken", res.data.jwtToken);
+          // sessionStorage.setItem("jwtToken", res.data.jwtToken);
         }
         return res.data;
       })

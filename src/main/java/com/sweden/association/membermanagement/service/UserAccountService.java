@@ -48,13 +48,13 @@ public class UserAccountService {
             if (mobileNumberExists != null)
                 jwtResponse.setMobileNumberExists(true);
 
-            if (userExistsByUsername != null)
+            if (userExistsByUsername)
                 jwtResponse.setUsernameExists(true);
 
-            if (userExistsByEmail != null)
+            if (userExistsByEmail)
                 jwtResponse.setEmailExists(true);
 
-            else if (mobileNumberExists == null && userExistsByEmail == null && userExistsByUsername == null) {
+            else if (mobileNumberExists == null && !userExistsByEmail && !userExistsByUsername) {
                 var member = new Member();
                 member.setFirstName(memberDto.getFirstName());
                 member.setLastName(memberDto.getLastName());
@@ -87,6 +87,7 @@ public class UserAccountService {
                 // jwtResponse.setJwtToken(jwtUtility.generateToken(userAccount));
 
                 mailService.sendConfirmRegistration(userAccount);
+                jwtResponse.setUserRegisteredSuccess(true);
             }
             return jwtResponse;
 

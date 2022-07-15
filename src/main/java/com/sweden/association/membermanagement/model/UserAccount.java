@@ -19,13 +19,13 @@ public class UserAccount {
     @Column(name = "user_account_id")
     private long userAccountId;
 
-    @Column(name = "username", nullable = false, length= 50)
+    @Column(name = "username", nullable = false, length= 50, unique = true)
     private String username;
 
     @Column(name = "password", nullable = false, length = 16)
     private String password;
 
-    @Column(name = "email", nullable = false, length = 100)
+    @Column(name = "email", nullable = false, length = 100, unique = true)
     private String email;
 
     @Column(name = "is_admin", nullable = false)
@@ -34,7 +34,7 @@ public class UserAccount {
     @Column(name = "is_activated", nullable = false)
     private Boolean isActivated;
 
-    @Column(name = "verification_token", nullable = false)
+    @Column(name = "verification_token", nullable = false, unique = true)
     private String verificationToken;
 
     @Column(name = "verification_token_expiry_date", nullable = false)

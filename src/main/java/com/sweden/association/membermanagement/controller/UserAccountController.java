@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 
 import com.sweden.association.membermanagement.dto.MemberDto;
 import com.sweden.association.membermanagement.model.UserAccount;
+import com.sweden.association.membermanagement.service.MailService;
 import com.sweden.association.membermanagement.service.UserAccountService;
 
 import com.sweden.association.membermanagement.utility.JwtResponse;
@@ -31,6 +32,9 @@ public class UserAccountController {
 
   @Autowired
   private UserAccountService userAccountService;
+
+  @Autowired
+  private MailService mailService;
 
   @GetMapping("/user-accounts/login")
   public JwtResponse login(@RequestParam String userName, @RequestParam String password) {
@@ -64,21 +68,19 @@ public class UserAccountController {
       var response = userAccountService.register(memberDto);
       return response;
     } catch (Exception ex) {
-      // return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
       return null;
     }
   }
 
   @GetMapping("/user-accounts/regitrationConfirm")
-  public String confirmRegistration(WebRequest request, Model model, @RequestParam("token") String token) {
-
+  public String confirmRegistration(WebRequest request, Model model, @RequestParam("token") String token)
+      throws Exception {
     Locale locale = request.getLocale();
     if (token == null) {
       String message = messages.getMessage("auth.message.invalidToken", null, locale);
       model.addAttribute("message", message);
       return "redirect:/badUser.html?lang=" + locale.getLanguage();
     }
-
     Calendar cal = Calendar.getInstance();
     var userAccount = userAccountService.getUserAccountByVerificationToken(token);
     if ((userAccount.getVerificationTokenExpiryDate().getTime() - cal.getTime().getTime()) <= 0) {
@@ -90,6 +92,7 @@ public class UserAccountController {
     userAccount.setIsActivated(true);
     userAccountService.setUserAccountToActive(userAccount);
 
+    mailService.sendGrantUserToAdmin(userAccount);
     return "redirect:/login.html?lang=" + request.getLocale().getLanguage();
   }
 }

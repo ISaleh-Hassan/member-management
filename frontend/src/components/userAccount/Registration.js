@@ -8,26 +8,29 @@ import Visibility from "@mui/material/Icon";
 import VisibilityOff from "@mui/material/Icon";
 import InputAdornment from "@mui/material/InputAdornment";
 import IconButton from "@mui/material/IconButton";
-
+import { CircularProgress } from "@mui/material";
+import Box from "@mui/material/Box";
+import { setGlobalState } from "../../state";
 import UserAccountService from "../../services/UserAccountService";
+import useFormValidation from "../../validation/useFormValidation";
 
 export default function Registration() {
   const [firstname, setFirstname] = useState("");
   const [lastname, setLastname] = useState("");
   const [email, setEmail] = useState("");
-  const [mobileNumber, setMobileNumber] = useState();
+  const [mobileNumber, setMobileNumber] = useState("");
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const navigate = useNavigate();
 
-  const [mobileNumberErrorText, setMobileNumberErrorText] = useState("");
   const [emailErrorText, setEmailErrorText] = useState("");
   const [usernameErrorText, setUsernameErrorText] = useState("");
 
-  const [passwordErrorText, setPasswordErrorText] = useState("");
-  const [confirmPasswordErrorText, setConfirmPasswordErrorText] = useState("");
+  const [showProgress, setShowProgress] = useState(false);
+  const { inputValues, errors, handleChange } = useFormValidation();
 
+  console.log(errors);
   const [values, setValues] = useState({
     amount: "",
     password: "",
@@ -54,73 +57,45 @@ export default function Registration() {
       mobileNumber.length > 0 &&
       email.length > 0 &&
       username.length > 0 &&
-      password.length > 0
-    )
-      if (password === confirmPassword) {
-        {
-          UserAccountService.registerAsync(
-            firstname,
-            lastname,
-            "+46" + mobileNumber,
-            email,
-            username,
-            password
-          ).then((res) => {
-            if (res.usernameExists) {
-              setUsernameErrorText("username already exists");
-            }
-            if (res.emailExists) {
-              setEmailErrorText("email already exists");
-            }
-          });
+      password.length > 0 &&
+      password === confirmPassword
+    ) {
+      UserAccountService.registerAsync(
+        firstname,
+        lastname,
+        "+46" + mobileNumber,
+        email,
+        username,
+        password
+      ).then((res) => {
+        if (res.usernameExists) {
+          setUsernameErrorText("username already exists");
         }
-      } else if (
-        firstname.length === 0 ||
-        lastname.length === 0 ||
-        mobileNumber.length === 0 ||
-        email.length === 0 ||
-        username.length === 0 ||
-        password.length === 0
-      ) {
-        alert("make sure you have filled in all fields");
-      }
+        if (res.emailExist) {
+          setEmailErrorText("email already exists");
+        }
+        if (res.mobileNumberExists) {
+          errors.mobileNumber = "mobile number already exists";
+          //setMobileNumberErrorText("mobile number already exists");
+        }
+        if (res.userRegisteredSuccess) {
+          setShowProgress(true);
+          setGlobalState("showRegistrationInformation", true);
+        }
+      });
+    } else if (
+      firstname.length === 0 ||
+      lastname.length === 0 ||
+      mobileNumber.length === 0 ||
+      email.length === 0 ||
+      username.length === 0 ||
+      password.length === 0
+    ) {
+      alert("Make sure you have filled in all fields");
+    }
     //navigate("member-payment-management");
   };
 
-  const validateMobileNumber = (e) => {
-    var mobileRegex = new RegExp("^(7[0236])*([0-9]{4})*([0-9]{3})$");
-    if (e === "") {
-      setMobileNumberErrorText("Field is empty");
-    } else if (mobileRegex.test(e)) {
-      setMobileNumberErrorText("");
-    } else if (!mobileRegex.test(e)) {
-      setMobileNumberErrorText(
-        "Mobile number must start with either: 70, 72, 73 or 76"
-      );
-    }
-  };
-
-  const validatePassword = (e) => {
-    var passwordRegex = new RegExp("(?=.*[A-Za-z])(?=.*[0-9])[A-Za-zd]{8,}");
-    if (e === "") {
-      setPasswordErrorText("Field is empty");
-    } else if (passwordRegex.test(e)) {
-      setPasswordErrorText("");
-    } else if (!passwordRegex.test(e)) {
-      setPasswordErrorText(
-        "Password must be at least 8 character long and contain at least one letter and one number"
-      );
-    }
-  };
-
-  const validateConfirmedPassword = (e) => {
-    if (password !== e) {
-      setConfirmPasswordErrorText("Password doesnt match!");
-    }
-    if (e.length === 0) {
-      setConfirmPasswordErrorText("");
-    }
-  };
   return (
     <Grid container spacing={2}>
       <Grid item xs={12}>
@@ -163,15 +138,16 @@ export default function Registration() {
               .toString()
               .slice(0, 9);
           }}
+          name="mobileNumber"
           type="number"
           label="mobile number"
           id="outlined-start-adornmen"
           required
           onChange={(e) => setMobileNumber(e.target.value)}
-          onBlur={(e) => validateMobileNumber(e.target.value)}
+          onBlur={(e) => handleChange(e)}
           value={mobileNumber}
           error={mobileNumber === ""}
-          helperText={mobileNumberErrorText}
+          helperText={errors.mobileNumber}
         ></TextField>
       </Grid>
       <Grid item xs={12}>
@@ -200,6 +176,7 @@ export default function Registration() {
       </Grid>
       <Grid item xs={12}>
         <TextField
+          name="password"
           inputProps={{ maxLength: 16 }}
           type="password"
           label="password"
@@ -207,8 +184,8 @@ export default function Registration() {
           value={password}
           required
           error={password === ""}
-          helperText={passwordErrorText}
-          onBlur={(e) => validatePassword(e.target.value)}
+          helperText={errors.password}
+          onBlur={(e) => handleChange(e)}
           endadornment={
             <InputAdornment position="end">
               <IconButton
@@ -224,6 +201,7 @@ export default function Registration() {
         ></TextField>
         <Grid item xs={12}>
           <TextField
+            name="confirmPassword"
             inputProps={{ maxLength: 16 }}
             type="password"
             label="confirm password"
@@ -231,8 +209,8 @@ export default function Registration() {
             onChange={(e) => setConfirmPassword(e.target.value)}
             required
             error={confirmPassword === ""}
-            helperText={confirmPasswordErrorText}
-            onBlur={(e) => validateConfirmedPassword(e.target.value)}
+            helperText={errors.confirmPassword}
+            onBlur={(e) => handleChange(e, password)}
             endadornment={
               <InputAdornment position="end">
                 <IconButton
@@ -257,6 +235,9 @@ export default function Registration() {
         >
           Register
         </Button>
+      </Grid>
+      <Grid item xs={12}>
+        {showProgress ? <CircularProgress /> : null}
       </Grid>
     </Grid>
   );
