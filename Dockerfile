@@ -6,7 +6,7 @@ WORKDIR /member-management
 RUN ls -l
 
 # Run Maven build
-RUN mvn clean install -X
+RUN mvn clean install
 
 FROM openjdk:11
 MAINTAINER Saleh and Carl
