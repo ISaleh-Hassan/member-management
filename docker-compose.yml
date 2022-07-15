@@ -8,5 +8,5 @@ services:
       - "5432:5432"
     restart: always
     environment:
-      POSTGRES_DB: db
-      POSTGRES_PASSWORD: password
+      POSTGRES_DB: "${JDBC_DATABASE_URL:db}"
+      POSTGRES_PASSWORD: "${JDBC_DATABASE_URL:password}" password
