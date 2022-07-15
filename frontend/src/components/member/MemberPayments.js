@@ -56,7 +56,7 @@ export default function MemeberPayments() {
   }
 
   async function confirmDeleteAllMemberPayments(){
-    axios.delete("http://localhost:8083/api/v1/payments");
+    axios.delete("https://member-payments-management.herokuapp.com/api/v1/payments");
     setMemberPaymentsModal(false)
   }
 

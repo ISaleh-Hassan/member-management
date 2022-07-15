@@ -3,7 +3,7 @@ import axios from "axios";
 const UserAccountService = {
   loginAsync: async function (userName, password) {
     axios
-      .get("http://localhost:8083/api/v1/user-accounts/login", {
+      .get("https://member-payments-management.herokuapp.com/api/v1/user-accounts/login", {
         params: { userName: userName, password: password },
       })
       .then((res) => {
@@ -32,7 +32,7 @@ const UserAccountService = {
     password
   ) {
     const promise = axios.post(
-      "http://localhost:8083/api/v1/user-accounts/register",
+      "https://member-payments-management.herokuapp.com/api/v1/user-accounts/register",
       null,
       {
         params: {

@@ -18,7 +18,4 @@ COPY --from=0 "/member-management/target/member-management-*-SNAPSHOT.jar" app.j
 # Fire up our Spring Boot app by default
 CMD [ "sh", "-c", "java $JAVA_OPTS -Djava.security.egd=file:/dev/./urandom -jar /app.jar" ]
 
-
-#ADD target/member-management-0.0.1-SNAPSHOT.jar member-management.jar
-#ENTRYPOINT ["java", "-jar", "member-management.jar"]
 EXPOSE 8083

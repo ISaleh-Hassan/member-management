@@ -25,7 +25,7 @@ export default function FileUploader(props) {
 
   React.useEffect(() => {
     if (selectedFile) {
-      axios.post("http://localhost:8083/api/v1/support/validate-csv", selectedFile, {
+      axios.post("https://member-payments-management.herokuapp.com/api/v1/support/validate-csv", selectedFile, {
         headers: {
           "Content-Type": "multipart/form-data"
         }
@@ -58,7 +58,7 @@ export default function FileUploader(props) {
 
 
   function confirmTransactionsFile() {
-    axios.post("http://localhost:8083/api/v1/payments", selectedFile, {
+    axios.post("https://member-payments-management.herokuapp.com/api/v1/payments", selectedFile, {
       headers: {
         "Content-Type": "multipart/form-data"
       }
