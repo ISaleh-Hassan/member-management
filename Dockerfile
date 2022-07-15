@@ -1,4 +1,4 @@
-FROM maven:3-jdk-15
+FROM maven:4-jdk-11
 ADD . /member-management
 WORKDIR /member-management
 
