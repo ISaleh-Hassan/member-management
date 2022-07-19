@@ -97,7 +97,7 @@ const Navbar = props => {
                 onClick={handleCloseNavMenu}
                 sx={{ my: 2, color: 'white', display: 'block' }}
               >
-                <Link style={{textDecoration: "none", color:"white"}} to={`/${props.routeMap[key]}`}>{key}</Link>
+                <Link style={{textDecoration: "none", color:"black"}} to={`/${props.routeMap[key]}`}>{key}</Link>
               </Button>
             ))}
             </Menu>
