@@ -19,8 +19,8 @@ const useFormValidation = () => {
         } else if (!mobileRegex.test(value)) {
           setErrors({
             ...errors,
-            mobileNumber: //TODO: The numbers can start with +4679 as well?
-              "Mobile number must start with either: 70, 72, 73 or 76",
+            mobileNumber:
+              "Mobile number must start with either: 70, 72, 73, 76 or 79",
           });
         }
         break;
