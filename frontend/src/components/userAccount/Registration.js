@@ -9,7 +9,6 @@ import VisibilityOff from "@mui/material/Icon";
 import InputAdornment from "@mui/material/InputAdornment";
 import IconButton from "@mui/material/IconButton";
 import { CircularProgress } from "@mui/material";
-import Box from "@mui/material/Box";
 import { setGlobalState } from "../../state";
 import UserAccountService from "../../services/UserAccountService";
 import useFormValidation from "../../validation/useFormValidation";
@@ -22,7 +21,6 @@ export default function Registration() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const navigate = useNavigate();
 
   const [emailErrorText, setEmailErrorText] = useState("");
   const [usernameErrorText, setUsernameErrorText] = useState("");
@@ -97,7 +95,9 @@ export default function Registration() {
   };
 
   return (
-    <Grid container spacing={2}>
+    <Grid container
+          rowSpacing={2}
+    >
       <Grid item xs={12}>
         <TextField
           type="text"
@@ -131,6 +131,7 @@ export default function Registration() {
         ></TextField>
       </Grid>
       <Grid item xs={12}>
+        <>
         <TextField style={{ width: "55px" }} readOnly value={"+46"}></TextField>
         <TextField
           onInput={(e) => {
@@ -149,6 +150,7 @@ export default function Registration() {
           error={mobileNumber === ""}
           helperText={errors.mobileNumber}
         ></TextField>
+        </>
       </Grid>
       <Grid item xs={12}>
         <TextField
@@ -199,8 +201,9 @@ export default function Registration() {
             </InputAdornment>
           }
         ></TextField>
-        <Grid item xs={12}>
-          <TextField
+      </Grid>
+      <Grid item xs={12}>
+        <TextField
             name="confirmPassword"
             inputProps={{ maxLength: 16 }}
             type="password"
@@ -223,9 +226,9 @@ export default function Registration() {
                 </IconButton>
               </InputAdornment>
             }
-          ></TextField>
+          >
+          </TextField>
         </Grid>
-      </Grid>
       <Grid item xs={12}>
         <Button
           variant="contained"

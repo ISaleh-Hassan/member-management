@@ -1,6 +1,4 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { useLocation } from "react-router-dom";
 import Grid from "@mui/material/Grid";
 
 export default function RegistrationInformation() {

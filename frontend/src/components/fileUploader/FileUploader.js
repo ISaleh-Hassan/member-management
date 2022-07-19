@@ -18,7 +18,7 @@ const style = {
   p: 4,
 };
 
-export default function FileUploader(props) {
+export default function FileUploader() {
   const [uploadInfoModal, setUploadInfoModal] = React.useState(false);
   const [uploadModal, setUploadModal] = React.useState(false);
   const [selectedFile, setSelectedFile] = React.useState();
@@ -78,7 +78,7 @@ export default function FileUploader(props) {
 
   return (
     <div>
-      <Button variant="contained" component="label" onClick={handleOpenUploadInfoModal} disabled={props.isAllowedToUpload}>Upload new Swedbank transactions</Button>
+      <Button variant="contained" component="label" onClick={handleOpenUploadInfoModal} >Upload new Swedbank transactions</Button>
       {uploadInfoModal ?
         <Modal
           open={uploadInfoModal}
