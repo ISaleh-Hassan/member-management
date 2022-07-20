@@ -10,7 +10,7 @@ const useFormValidation = () => {
     //A function to validate each input values
     switch (name) {
       case "mobileNumber":
-        var mobileRegex = new RegExp("^(7[0236])*([0-9]{4})*([0-9]{3})$");
+        var mobileRegex = new RegExp("^(7[02369])*([0-9]{4})*([0-9]{3})$");
         if (value === "") {
           setErrors({ ...errors, mobileNumber: "Field is empty" });
         } else if (mobileRegex.test(value)) {
