@@ -105,6 +105,15 @@ public class UserAccountService {
         return userAccount;
     }
 
+    public UserAccount getUserAccountById(long id) {
+        var userAccount = userAccountRepository.findById(id).get();
+        return userAccount;
+    }
+
+    public void setUserAccountToAdmin(UserAccount userAccount) {
+        userAccountRepository.save(userAccount);
+    }
+
     public void setUserAccountToActive(UserAccount userAccount) {
         userAccountRepository.save(userAccount);
     }

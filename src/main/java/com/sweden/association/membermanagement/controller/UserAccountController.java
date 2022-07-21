@@ -72,7 +72,7 @@ public class UserAccountController {
     }
   }
 
-  @GetMapping("/user-accounts/regitrationConfirm")
+  @GetMapping("/user-accounts/registrationConfirm")
   public String confirmRegistration(WebRequest request, Model model, @RequestParam("token") String token)
       throws Exception {
     Locale locale = request.getLocale();
@@ -88,11 +88,17 @@ public class UserAccountController {
       model.addAttribute("message", messageValue);
       return "redirect:/badUser.html?lang=" + locale.getLanguage();
     }
-
     userAccount.setIsActivated(true);
     userAccountService.setUserAccountToActive(userAccount);
-
     mailService.sendGrantUserToAdmin(userAccount);
     return "redirect:/login.html?lang=" + request.getLocale().getLanguage();
+  }
+
+  @GetMapping("/user-accounts/grantAdminRights")
+  public void grantAdminRights(@RequestParam("id") long id)
+      throws Exception {
+    var userAccount = userAccountService.getUserAccountById(id);
+    userAccount.setIsAdmin(true);
+    userAccountService.setUserAccountToAdmin(userAccount);
   }
 }

@@ -27,8 +27,8 @@ export default function Registration() {
 
   const [showProgress, setShowProgress] = useState(false);
   const { inputValues, errors, handleChange } = useFormValidation();
-
-  console.log(errors);
+  const navigate = useNavigate();
+  //console.log(errors);
   const [values, setValues] = useState({
     amount: "",
     password: "",
@@ -79,6 +79,7 @@ export default function Registration() {
         if (res.userRegisteredSuccess) {
           setShowProgress(true);
           setGlobalState("showRegistrationInformation", true);
+          navigate("registration-information");
         }
       });
     } else if (
@@ -94,12 +95,27 @@ export default function Registration() {
     //navigate("member-payment-management");
   };
 
+  const onBlurChange = (e) => {
+    let name = e.target.name;
+    let val = e.target.value;
+    switch (name) {
+      case "username":
+        if (val.length < 4)
+          setUsernameErrorText("Username is too short, minimum length is 4");
+        else setUsernameErrorText("");
+        break;
+      case "email":
+        if (val.length < 3)
+          setEmailErrorText("Email is too short, minimum length is 3");
+        else setEmailErrorText("");
+        break;
+    }
+  };
   return (
-    <Grid container
-          rowSpacing={2}
-    >
+    <Grid container rowSpacing={2}>
       <Grid item xs={12}>
         <TextField
+          name="firstname"
           type="text"
           label="firstname"
           id="outlined-start-adornmen"
@@ -109,13 +125,15 @@ export default function Registration() {
               e.target.value.charAt(0).toUpperCase() + e.target.value.slice(1)
             )
           }
+          onBlur={(e) => handleChange(e)}
           value={firstname}
           error={firstname === ""}
-          helperText={firstname === "" ? "Empty field!" : " "}
+          helperText={errors.firstname}
         ></TextField>
       </Grid>
       <Grid item xs={12}>
         <TextField
+          name="lastname"
           type="text"
           label="lastname"
           id="outlined-start-adornmen"
@@ -125,40 +143,47 @@ export default function Registration() {
               e.target.value.charAt(0).toUpperCase() + e.target.value.slice(1)
             )
           }
+          onBlur={(e) => handleChange(e)}
           value={lastname}
           error={lastname === ""}
-          helperText={lastname === "" ? "Empty field!" : " "}
+          helperText={errors.lastname}
         ></TextField>
       </Grid>
       <Grid item xs={12}>
         <>
-        <TextField style={{ width: "55px" }} readOnly value={"+46"}></TextField>
-        <TextField
-          onInput={(e) => {
-            e.target.value = Math.max(0, parseInt(e.target.value))
-              .toString()
-              .slice(0, 9);
-          }}
-          name="mobileNumber"
-          type="number"
-          label="mobile number"
-          id="outlined-start-adornmen"
-          required
-          onChange={(e) => setMobileNumber(e.target.value)}
-          onBlur={(e) => handleChange(e)}
-          value={mobileNumber}
-          error={mobileNumber === ""}
-          helperText={errors.mobileNumber}
-        ></TextField>
+          <TextField
+            style={{ width: "55px" }}
+            readOnly
+            value={"+46"}
+          ></TextField>
+          <TextField
+            onInput={(e) => {
+              e.target.value = Math.max(0, parseInt(e.target.value))
+                .toString()
+                .slice(0, 9);
+            }}
+            name="mobileNumber"
+            type="number"
+            label="mobile number"
+            id="outlined-start-adornmen"
+            required
+            onChange={(e) => setMobileNumber(e.target.value)}
+            onBlur={(e) => handleChange(e)}
+            value={mobileNumber}
+            error={mobileNumber === ""}
+            helperText={errors.mobileNumber}
+          ></TextField>
         </>
       </Grid>
       <Grid item xs={12}>
         <TextField
+          name="email"
           type="text"
           label="email"
           id="outlined-start-adornmen"
           required
           onChange={(e) => setEmail(e.target.value)}
+          onBlur={(e) => onBlurChange(e)}
           value={email}
           error={email === ""}
           helperText={emailErrorText}
@@ -166,11 +191,13 @@ export default function Registration() {
       </Grid>
       <Grid item xs={12}>
         <TextField
+          name="username"
           type="text"
           label="username"
           id="outlined-start-adornmen"
           required
           onChange={(e) => setUsername(e.target.value)}
+          onBlur={(e) => onBlurChange(e)}
           value={username}
           error={username === ""}
           helperText={usernameErrorText}
@@ -204,31 +231,30 @@ export default function Registration() {
       </Grid>
       <Grid item xs={12}>
         <TextField
-            name="confirmPassword"
-            inputProps={{ maxLength: 16 }}
-            type="password"
-            label="confirm password"
-            value={confirmPassword}
-            onChange={(e) => setConfirmPassword(e.target.value)}
-            required
-            error={confirmPassword === ""}
-            helperText={errors.confirmPassword}
-            onBlur={(e) => handleChange(e, password)}
-            endadornment={
-              <InputAdornment position="end">
-                <IconButton
-                  aria-label="toggle password visibility"
-                  onClick={handleClickShowPassword}
-                  onMouseDown={handleMouseDownPassword}
-                  edge="end"
-                >
-                  {values.showPassword ? <VisibilityOff /> : <Visibility />}
-                </IconButton>
-              </InputAdornment>
-            }
-          >
-          </TextField>
-        </Grid>
+          name="confirmPassword"
+          inputProps={{ maxLength: 16 }}
+          type="password"
+          label="confirm password"
+          value={confirmPassword}
+          onChange={(e) => setConfirmPassword(e.target.value)}
+          required
+          error={confirmPassword === ""}
+          helperText={errors.confirmPassword}
+          onBlur={(e) => handleChange(e, password)}
+          endadornment={
+            <InputAdornment position="end">
+              <IconButton
+                aria-label="toggle password visibility"
+                onClick={handleClickShowPassword}
+                onMouseDown={handleMouseDownPassword}
+                edge="end"
+              >
+                {values.showPassword ? <VisibilityOff /> : <Visibility />}
+              </IconButton>
+            </InputAdornment>
+          }
+        ></TextField>
+      </Grid>
       <Grid item xs={12}>
         <Button
           variant="contained"

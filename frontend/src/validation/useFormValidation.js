@@ -9,13 +9,31 @@ const useFormValidation = () => {
   const validate = (event, name, value, password) => {
     //A function to validate each input values
     switch (name) {
+      case "firstname":
+        if(value.length < 2){
+          setErrors({ ...errors, firstname: "Firstname is too short, minimum length is 2" });
+        }
+        else{
+          let newObj = omit(errors, "firstname");
+          setErrors(newObj);
+        }
+        break;
+        case "lastname":
+          if(value.length < 2){
+            setErrors({ ...errors, lastname: "Lastname is too short, minimum length is 2" });
+          }
+          else{
+            let newObj = omit(errors, "lastname");
+            setErrors(newObj);
+          }
+        break;
       case "mobileNumber":
         var mobileRegex = new RegExp("^(7[02369])*([0-9]{4})*([0-9]{3})$");
-        if (value === "") {
-          setErrors({ ...errors, mobileNumber: "Field is empty" });
-        } else if (mobileRegex.test(value)) {
+        if (mobileRegex.test(value)) {
           let newObj = omit(errors, "mobileNumber");
           setErrors(newObj);
+        } else if (value === "") {
+          setErrors({ ...errors, mobileNumber: "Field is empty" });
         } else if (!mobileRegex.test(value)) {
           setErrors({
             ...errors,
@@ -24,21 +42,15 @@ const useFormValidation = () => {
           });
         }
         break;
-      case "username":
-        break;
-
-      case "email":
-        break;
-
       case "password":
         var passwordRegex = new RegExp(
           "(?=.*[A-Za-z])(?=.*[0-9])[A-Za-zd]{8,}"
         );
-        if (value === "") {
-          setErrors({ ...errors, password: "Field is empty" });
-        } else if (passwordRegex.test(value)) {
+        if (passwordRegex.test(value)) {
           let newObj = omit(errors, "password");
           setErrors(newObj);
+        } else if (value === "") {
+          setErrors({ ...errors, password: "Field is empty" });
         } else if (!passwordRegex.test(value)) {
           setErrors({
             ...errors,
@@ -47,7 +59,6 @@ const useFormValidation = () => {
           });
         }
         break;
-
       case "confirmPassword":
         if (password !== value) {
           setErrors({ ...errors, confirmPassword: "Password doesnt match!" });

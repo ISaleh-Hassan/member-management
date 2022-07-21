@@ -16,9 +16,9 @@ public class MailService {
 
   protected void sendConfirmRegistration(UserAccount userAccount) throws MailException {
     String subject = "Registration Confirmation";
-    String confirmationUrl = "http://localhost:8083/api/v1/user-accounts/regitrationConfirm?token="
+    String confirmationUrl = "http://localhost:8083/api/v1/user-accounts/registrationConfirm?token="
         + userAccount.getVerificationToken();
-    String message = "Click this link to verify your email address";
+    String message = "Hi " + userAccount.getMemberUserAccount().getFirstName() + " please click this link to verify your email address needed for accessing the member management application";
     SimpleMailMessage email = new SimpleMailMessage();
     email.setTo(userAccount.getEmail());
     email.setSubject(subject);
@@ -28,9 +28,13 @@ public class MailService {
 
   public void sendGrantUserToAdmin(UserAccount userAccount) throws MailException {
     String subject = "Grant admin priviliges";
-    String message = "The user " + userAccount.getUsername() + " has just been verified, grant him/her admin priviliges in the membermanagement application";
+    String grantAdminUrl = "http://localhost:8083/api/v1/user-accounts/grantAdminRights?id="
+        + userAccount.getUserAccountId();
+    String message = "The user " + userAccount.getMemberUserAccount().getFirstName()
+        + " has just been verified please grant him or her admin priviliges in the membermanagement application" + "\r\n" +  grantAdminUrl;
+
     SimpleMailMessage email = new SimpleMailMessage();
-    email.setTo("carl.hillman@gmail.com");//here we set the mail of the admin who grants admin priviliges to users
+    email.setTo("carl.hillman@gmail.com");// here we set the mail of the admin who grants admin priviliges to users
     email.setSubject(subject);
     email.setText(message);
     mailSender.send(email);

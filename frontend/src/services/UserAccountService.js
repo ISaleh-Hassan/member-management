@@ -3,7 +3,7 @@ import axios from "axios";
 const UserAccountService = {
   loginAsync: async function (userName, password) {
     axios
-      .get("https://member-payments-management.herokuapp.com/api/v1/user-accounts/login", {
+      .get(process.env.REACT_APP_BASE_SERVER_URL + "user-accounts/login", {
         params: { userName: userName, password: password },
       })
       .then((res) => {
@@ -31,8 +31,8 @@ const UserAccountService = {
     username,
     password
   ) {
-    const promise = axios.post(
-      "https://member-payments-management.herokuapp.com/api/v1/user-accounts/register",
+    const promise = axios.post(process.env.REACT_APP_BASE_SERVER_URL + 
+      "user-accounts/register",
       null,
       {
         params: {
