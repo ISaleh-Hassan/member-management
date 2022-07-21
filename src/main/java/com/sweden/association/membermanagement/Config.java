@@ -8,12 +8,9 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 
 import java.util.Properties;
-import java.util.logging.Logger;
 
 @Configuration
 public class Config {
-    private static final Logger LOGGER = Logger.getLogger(Config.class.getName());
-
     @Autowired
     private Environment env;
 
