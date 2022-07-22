@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
 import Grid from "@mui/material/Grid";
@@ -13,7 +13,7 @@ import { setGlobalState } from "../../state";
 import UserAccountService from "../../services/UserAccountService";
 import useFormValidation from "../../validation/useFormValidation";
 
-export default function Registration() {
+export default function Registration(props) {
   const [firstname, setFirstname] = useState("");
   const [lastname, setLastname] = useState("");
   const [email, setEmail] = useState("");
@@ -28,7 +28,13 @@ export default function Registration() {
   const [showProgress, setShowProgress] = useState(false);
   const { inputValues, errors, handleChange } = useFormValidation();
   const navigate = useNavigate();
-  //console.log(errors);
+
+  useEffect(() => {
+    if (props.isAuthorized) {
+      navigate("/member-administration");
+    }
+  });
+
   const [values, setValues] = useState({
     amount: "",
     password: "",

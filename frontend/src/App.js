@@ -1,9 +1,10 @@
 import React from "react";
 import "./App.css";
 import Login from "./components/userAccount/Login";
+import ProtectedRoute from "./routes/ProtectedRoute"
 import Registration from "./components/userAccount/Registration";
 import RegistrationInformation from "./components/userAccount/RegistrationInformation";
-import MemeberPayments from "./components/member/MemberPayments";
+import MemberPayments from "./components/member/MemberPayments";
 import MemberAdministration from "./components/member/MemberAdministration";
 import UserAccountService from "./services/UserAccountService";
 import { useGlobalState } from "./state";
@@ -12,54 +13,47 @@ import Navbar from "./components/header/Navbar";
 
 //This map is used to map the component name that will be shown in the Navbar with the actual route
 var routeMap = {
-  "Member payment management":"member-payment-management",
+  "Member payment management": "member-payment-management",
   "Member adminstration": "member-administration"
 }
 
 // All those mapping are not working yet. But they do exist in the navbar
+// An exception is Logout function which is working fine.
 const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
 
 function App() {
-  const showRegistrationInformation = useGlobalState(
-    "showRegistrationInformation"
-  );
+  const showRegistrationInformation = useGlobalState("showRegistrationInformation");
+  // TODO: This is a temporary solution for the routing until we have a good way to check the token
+  const isAuthorized = localStorage.getItem("jwtToken") !== null;
+
   return (
     <div className="App">
-      <Navbar routeMap={routeMap} settings={settings}/>
-          <ul>
-              <li>
-                <Link to="/">Login</Link>
-              </li>
-              <li>
-                <Link to="/Registration">Register</Link>
-              </li>
-            </ul>
-        <Routes>
-          <Route path="/" element={<Login />} />
-          <Route path="registration" element={<Registration />} />
-          <Route
-            path="member-payment-management"
-            element={<MemeberPayments />}
-          />
-           <Route
-            path="member-administration"
-            element={<MemberAdministration />}
-          />
-          <Route
-            path="login"
-            element={<Login />}
-          />
-          <Route
-            path="registration"
-            element={<Registration />}
-          />
-          {showRegistrationInformation[0] === true ? (
-            <Route
-              path="registration-information"
-              element={<RegistrationInformation />}
-            />
-          ) : null}
-        </Routes>
+      <Navbar routeMap={routeMap} settings={settings} />
+      <ul>
+        <li>
+          <Link to="/">Login</Link>
+        </li>
+        <li>
+          <Link to="/Registration">Register</Link>
+        </li>
+      </ul>
+      <Routes>
+        <Route path="/" element={<Login isAuthorized={isAuthorized} />} />
+        <Route path="registration" element={<Registration isAuthorized={isAuthorized} />} />
+        <Route path="member-payment-management" element={
+          <ProtectedRoute>
+            <MemberPayments />
+          </ProtectedRoute>
+        } />
+        <Route path="member-administration" element={
+          <ProtectedRoute>
+            <MemberAdministration />
+          </ProtectedRoute>
+        } />
+        <Route path="login" element={<Login isAuthorized={isAuthorized} />} />
+        <Route path="registration" element={<Registration isAuthorized={isAuthorized}/>} />
+        {showRegistrationInformation[0] === true ? (<Route path="registration-information" element={<RegistrationInformation />} />) : null}
+      </Routes>
     </div>
   );
 }

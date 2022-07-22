@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
@@ -13,13 +13,18 @@ import FilledInput from "@mui/material/FilledInput";
 import OutlinedInput from "@mui/material/OutlinedInput";
 import InputLabel from "@mui/material/InputLabel";
 import UserAccountService from "../../services/UserAccountService";
-import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
+import {Link} from "react-router-dom";
 
-function Login() {
+function Login(props) {
   const [userName, setUserName] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
-
+  
+  useEffect(() => {
+    if (props.isAuthorized) {
+      navigate("/member-administration");
+    }
+  });
   const [values, setValues] = useState({
     amount: "",
     password: "",
@@ -41,13 +46,6 @@ function Login() {
   const login = (e) => {
     e.preventDefault();
     UserAccountService.loginAsync(userName, password);
-    if (
-      localStorage.getItem("jwtToken") &&
-      userName.length > 0 &&
-      password.length > 0
-    ) {
-      navigate("member-payment-management");
-    }
   };
   return (
     <Grid container spacing={2}>
