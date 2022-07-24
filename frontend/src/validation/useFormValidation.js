@@ -9,23 +9,14 @@ const useFormValidation = () => {
   const validate = (event, name, value, password) => {
     //A function to validate each input values
     switch (name) {
-      case "firstname":
+      case "name":
         if(value.length < 2){
-          setErrors({ ...errors, firstname: "Firstname is too short, minimum length is 2" });
+          setErrors({ ...errors, name: "name is too short, minimum length is 2" });
         }
         else{
-          let newObj = omit(errors, "firstname");
+          let newObj = omit(errors, "name");
           setErrors(newObj);
         }
-        break;
-        case "lastname":
-          if(value.length < 2){
-            setErrors({ ...errors, lastname: "Lastname is too short, minimum length is 2" });
-          }
-          else{
-            let newObj = omit(errors, "lastname");
-            setErrors(newObj);
-          }
         break;
       case "mobileNumber":
         var mobileRegex = new RegExp("^(7[02369])*([0-9]{4})*([0-9]{3})$");
