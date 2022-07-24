@@ -14,8 +14,7 @@ import UserAccountService from "../../services/UserAccountService";
 import useFormValidation from "../../validation/useFormValidation";
 
 export default function Registration(props) {
-  const [firstname, setFirstname] = useState("");
-  const [lastname, setLastname] = useState("");
+  const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [mobileNumber, setMobileNumber] = useState("");
   const [username, setUsername] = useState("");
@@ -54,10 +53,10 @@ export default function Registration(props) {
     event.preventDefault();
   };
   const register = (e) => {
+
     e.preventDefault();
     if (
-      firstname.length > 0 &&
-      lastname.length > 0 &&
+      name.length > 0 &&
       mobileNumber.length > 0 &&
       email.length > 0 &&
       username.length > 0 &&
@@ -65,8 +64,7 @@ export default function Registration(props) {
       password === confirmPassword
     ) {
       UserAccountService.registerAsync(
-        firstname,
-        lastname,
+        name,
         "+46" + mobileNumber,
         email,
         username,
@@ -89,8 +87,7 @@ export default function Registration(props) {
         }
       });
     } else if (
-      firstname.length === 0 ||
-      lastname.length === 0 ||
+      name.length === 0 ||
       mobileNumber.length === 0 ||
       email.length === 0 ||
       username.length === 0 ||
@@ -121,38 +118,20 @@ export default function Registration(props) {
     <Grid container rowSpacing={2}>
       <Grid item xs={12}>
         <TextField
-          name="firstname"
+          name="name"
           type="text"
-          label="firstname"
+          label="name"
           id="outlined-start-adornmen"
           required
           onChange={(e) =>
-            setFirstname(
+            setName(
               e.target.value.charAt(0).toUpperCase() + e.target.value.slice(1)
             )
           }
           onBlur={(e) => handleChange(e)}
-          value={firstname}
-          error={firstname === ""}
-          helperText={errors.firstname}
-        ></TextField>
-      </Grid>
-      <Grid item xs={12}>
-        <TextField
-          name="lastname"
-          type="text"
-          label="lastname"
-          id="outlined-start-adornmen"
-          required
-          onChange={(e) =>
-            setLastname(
-              e.target.value.charAt(0).toUpperCase() + e.target.value.slice(1)
-            )
-          }
-          onBlur={(e) => handleChange(e)}
-          value={lastname}
-          error={lastname === ""}
-          helperText={errors.lastname}
+          value={name}
+          error={name === ""}
+          helperText={errors.name}
         ></TextField>
       </Grid>
       <Grid item xs={12}>

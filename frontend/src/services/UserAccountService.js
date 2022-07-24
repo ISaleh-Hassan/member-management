@@ -24,8 +24,7 @@ const UserAccountService = {
   },
 
   registerAsync: async function (
-    firstname,
-    lastname,
+    name,
     mobileNumber,
     email,
     username,
@@ -36,8 +35,7 @@ const UserAccountService = {
       null,
       {
         params: {
-          firstname,
-          lastname,
+          name,
           mobileNumber,
           email,
           username,
