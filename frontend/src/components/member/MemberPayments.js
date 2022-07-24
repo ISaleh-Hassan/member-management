@@ -32,7 +32,6 @@ const style = {
 
 export default function MemeberPayments() {
   const [allMembersPayments, setAllMembersPayments] = useState([])
-  const [transactionUploaderModal, setTransactionUploaderModal] = useState(false)
 
 
   useEffect(() => {
@@ -43,14 +42,7 @@ export default function MemeberPayments() {
     })
   }, [])
 
-  async function confirmUploadNewTransactions(){
-    axios.delete("https://member-payments-management.herokuapp.com/api/v1/payments");
-    setTransactionUploaderModal(false)
-  }
 
-  function cancelUploadNewTransactions(){
-    setTransactionUploaderModal(!transactionUploaderModal)
-  }
   return (
     <>
       <h2>Member payment management</h2>

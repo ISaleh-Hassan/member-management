@@ -25,7 +25,7 @@ export default function FileUploader() {
 
   React.useEffect(() => {
     if (selectedFile) {
-      axios.post("https://member-payments-management.herokuapp.com/api/v1/support/validate-csv", selectedFile, {
+      axios.post(process.env.REACT_APP_BASE_SERVER_URL + "support/validate-csv", selectedFile, {
         headers: {
           "Content-Type": "multipart/form-data"
         }
@@ -58,7 +58,7 @@ export default function FileUploader() {
 
 
   function confirmTransactionsFile() {
-    axios.post("https://member-payments-management.herokuapp.com/api/v1/payments", selectedFile, {
+    axios.post(process.env.REACT_APP_BASE_SERVER_URL + "payments", selectedFile, {
       headers: {
         "Content-Type": "multipart/form-data"
       }

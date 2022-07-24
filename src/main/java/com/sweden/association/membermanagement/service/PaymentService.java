@@ -18,10 +18,9 @@ import java.util.List;
 import java.util.logging.Logger;
 
 import static com.sweden.association.membermanagement.validator.CsvHelper.VALID_HEADER;
-import static com.sweden.association.membermanagement.validator.CsvHelper.tryReadCsvFile;
 import static com.sweden.association.membermanagement.validator.CsvHelper.validateAndConvertAmount;
 import static com.sweden.association.membermanagement.validator.CsvHelper.validateAndGetDate;
-import static com.sweden.association.membermanagement.validator.MemberValidator.validateAndGetMobileNumber;
+import static com.sweden.association.membermanagement.validator.MemberHelper.validateAndGetMobileNumber;
 
 @Service
 public class PaymentService {
@@ -35,8 +34,8 @@ public class PaymentService {
 
 
     public void addPayments(MultipartFile selectedFile) {
-        CsvHelper.isValidSwedbankCsvFile(tryReadCsvFile(selectedFile, 0));
-        List<String[]> transactions = tryReadCsvFile(selectedFile, 2);
+        CsvHelper.isValidSwedBankCsvFile(CsvHelper.tryReadCsvFileWithCommaSeparator(selectedFile, 0));
+        List<String[]> transactions = CsvHelper.tryReadCsvFileWithCommaSeparator(selectedFile, 2);
         List<Payment> swishTransactions = getMapOfAllSwishTransactions(transactions);
         // TODO: As for now, we need to clear the db before adding new payments due to the limitation we have in the db.
         //  If the client will pay for the application, we will make it possible to save historical payments
@@ -62,11 +61,12 @@ public class PaymentService {
             }
             String description = transaction[9];
 
-            if (description.contains("Swish mottagen")) {
-                validateAndGetMobileNumber(transaction[8]);
+            if (description.contains("Swish")) {
+                String mobileNumber = description.replaceAll("Swish ", "").trim();
+                validateAndGetMobileNumber(mobileNumber);
                 String date = validateAndGetDate(transaction[7]);
                 BigDecimal amount = validateAndConvertAmount(transaction[10]);
-                Member member = memberService.getOrCreateDefaultMember(transaction[8]);
+                Member member = memberService.getOrCreateDefaultMember(mobileNumber);
                 Payment payment = new Payment();
                 payment.setAmount(amount);
                 payment.setTransactionDate(LocalDate.parse(date));

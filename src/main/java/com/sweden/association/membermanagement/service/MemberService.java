@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.Objects;
 
 import static com.sweden.association.membermanagement.service.PaymentService.UNKONWN;
-import static com.sweden.association.membermanagement.validator.MemberValidator.validateMember;
+import static com.sweden.association.membermanagement.validator.MemberHelper.validateMember;
 
 @Service
 public class MemberService {
@@ -34,11 +34,11 @@ public class MemberService {
                 .forEach(member -> {
                     List<Payment> memberPayments = member.getPayments();
                     if (memberPayments.isEmpty()) {
-                        paymentDtos.add(new PaymentDto(String.format("%s %s", member.getFirstName(), member.getLastName()), member.getMobileNumber(), new BigDecimal(0), "-"));
+                        paymentDtos.add(new PaymentDto(member.getName(), member.getMobileNumber(), new BigDecimal(0), "-"));
                     } else {
                         memberPayments
                                 .forEach(payment -> {
-                                    PaymentDto paymentDto = new PaymentDto(String.format("%s %s", payment.getPayer().getFirstName(), payment.getPayer().getLastName()),
+                                    PaymentDto paymentDto = new PaymentDto(member.getName(),
                                             member.getMobileNumber(),
                                             payment.getAmount(),
                                             payment.getTransactionDate().toString());
@@ -53,8 +53,9 @@ public class MemberService {
         validateMember(member);
         Member dbMember = memberRepository.findByMobileNumber(member.getMobileNumber());
         if(Objects.nonNull(dbMember)){
+            System.err.println(dbMember.getName());
             throw  new ResponseStatusException(HttpStatus.BAD_REQUEST,
-                    String.format("A mobile number shall be unique. This number belong to %s %s", dbMember.getFirstName(), dbMember.getLastName()));
+                    String.format("A mobile number shall be unique. This number: %s belong to the member %s ", member.getMobileNumber(), dbMember.getName()));
         }
         memberRepository.save(member);
     }
@@ -68,12 +69,15 @@ public class MemberService {
         if (Objects.isNull(member)) {
             // We create a default member and the admin can edit it in the future
             Member defaultMember = new Member();
-            defaultMember.setFirstName(UNKONWN);
-            defaultMember.setLastName(UNKONWN);
+            defaultMember.setName(UNKONWN);
             defaultMember.setMobileNumber(mobileNumber);
             memberRepository.save(defaultMember);
             member = memberRepository.findByMobileNumber(mobileNumber);
         }
         return member;
+    }
+
+    public void deleteAllMembers() {
+        memberRepository.deleteAll();
     }
 }

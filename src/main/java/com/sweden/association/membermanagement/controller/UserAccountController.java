@@ -22,7 +22,7 @@ import com.sweden.association.membermanagement.service.UserAccountService;
 import com.sweden.association.membermanagement.utility.JwtResponse;
 import com.sweden.association.membermanagement.validator.UserAccountValidator;
 
-@CrossOrigin(origins = { "http://localhost:3000", "https://localhost:3000" })
+@CrossOrigin(origins = { "http://localhost:3000", "https://localhost:3000", "https://member-payments-management.herokuapp.com"})
 @RestController
 @RequestMapping("/api/v1")
 public class UserAccountController {
@@ -49,13 +49,12 @@ public class UserAccountController {
   }
 
   @PostMapping("/user-accounts/register")
-  public JwtResponse register(@RequestParam String firstname, @RequestParam String lastname,
+  public JwtResponse register(@RequestParam String name,
       @RequestParam String mobileNumber,
       @RequestParam String email, @RequestParam String username, @RequestParam String password) {
     try {
       var memberDto = new MemberDto();
-      memberDto.setFirstName(firstname);
-      memberDto.setLastName(lastname);
+      memberDto.setName(name);
       memberDto.setMobileNumber(mobileNumber);
 
       var userAccount = new UserAccount();

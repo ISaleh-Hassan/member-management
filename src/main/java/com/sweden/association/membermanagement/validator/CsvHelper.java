@@ -22,11 +22,11 @@ public class CsvHelper {
     // These columns represent the structure of the CSV file that the client will export from Swedbank
     // Note: We accept only the english header
     public final static String[] VALID_HEADER =
-            new String[] {"Line number","Clearing number","Account number","Product","Currency","Booked date","Transaction date","Value date","Reference","Description","Amount","Booked balance"};
+            new String[] {"Radnr","Clnr","Kontonr","Produkt","Valuta","Bokfdag","Transdag","Valutadag","Referens","Text","Belopp","Saldo"};
 
-    public static List<String[]> readCsv(byte[] csvBytes, int skipLines) throws Exception {
+    public static List<String[]> readCsv(byte[] csvBytes, int skipLines, char separator) throws Exception {
         CSVParser parser = new CSVParserBuilder()
-                .withSeparator(',')
+                .withSeparator(separator)
                 .withIgnoreQuotations(true)
                 .build();
 
@@ -37,15 +37,23 @@ public class CsvHelper {
         return csvReader.readAll();
     }
 
-    public static List<String[]> tryReadCsvFile(MultipartFile selectedFile, int skipLines){
+    public static List<String[]> tryReadCsvFileWithCommaSeparator(MultipartFile selectedFile, int skipLines){
         try {
-            return CsvHelper.readCsv(selectedFile.getBytes(), skipLines);
+            return CsvHelper.readCsv(selectedFile.getBytes(), skipLines, ',');
         }  catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Something went wrong while reading the file, make sure to add the file correctly.");
         }
     }
 
-    public static void isValidSwedbankCsvFile(List<String[]> csvRows){
+    public static List<String[]> tryReadCsvFile(MultipartFile selectedFile, int skipLines, char separator){
+        try {
+            return CsvHelper.readCsv(selectedFile.getBytes(), skipLines, separator);
+        }  catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Something went wrong while reading the file, make sure to add the file correctly.");
+        }
+    }
+
+    public static void isValidSwedBankCsvFile(List<String[]> csvRows){
         if(Objects.isNull(csvRows) || csvRows.isEmpty()){
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Csv rows shall not be null");
         }

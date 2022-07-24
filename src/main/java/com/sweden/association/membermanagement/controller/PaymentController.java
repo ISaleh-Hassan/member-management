@@ -19,7 +19,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
 import java.util.logging.Logger;
 
-@CrossOrigin(origins = {"https://localhost:3000", "http://localhost:3000"})
+@CrossOrigin(origins = {"https://localhost:3000", "http://localhost:3000", "https://member-payments-management.herokuapp.com"})
 @RestController
 @RequestMapping("/api/v1")
 public class PaymentController {

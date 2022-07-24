@@ -1,6 +1,6 @@
 import axios from "axios";
 export default async function addPayments(selectedFile) {
-    axios.post("https://member-payments-management.herokuapp.com/api/v1/payments", selectedFile, {
+    axios.post(process.env.REACT_APP_BASE_SERVER_URL + "payments", selectedFile, {
         headers:{
         "Content-Type":"multipart/form-data"
         }
@@ -13,7 +13,7 @@ export default async function addPayments(selectedFile) {
 }
 
 export default async function getAllPayments() {
-    const response = await fetch("https://member-payments-management.herokuapp.com/api/v1/members/payments");
+    const response = await fetch(process.env.REACT_APP_BASE_SERVER_URL + "members/payments");
     if (response.status === 200) {
         let body = await response.json();
         return body;

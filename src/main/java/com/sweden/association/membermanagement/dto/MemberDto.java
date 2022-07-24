@@ -7,8 +7,7 @@ import java.util.Set;
 
 public class MemberDto {
     private long memberId;
-    private String firstName;
-    private String lastName;
+    private String name;
     private String mobileNumber;
     private Boolean isAdmin;
     private Set<Payment> payments;
@@ -30,20 +29,12 @@ public class MemberDto {
         this.memberId = memberId;
     }
 
-    public String getFirstName() {
-        return firstName;
+    public String getName() {
+        return name;
     }
 
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
-
-    public String getLastName() {
-        return lastName;
-    }
-
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getMobileNumber() {

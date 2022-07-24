@@ -22,7 +22,7 @@ public class MailService {
     final String baseUrl = env.getProperty("base.url");
 
     String confirmationUrl = baseUrl + "/api/v1/user-accounts/registrationConfirm?token="+ userAccount.getVerificationToken();
-    String message = "Hi " + userAccount.getMemberUserAccount().getFirstName() + " please click this link to verify your email address needed for accessing the member management application";
+    String message = "Hi " + userAccount.getMemberUserAccount().getName() + " please click this link to verify your email address needed for accessing the member management application";
     SimpleMailMessage email = new SimpleMailMessage();
     email.setTo(userAccount.getEmail());
     email.setSubject(subject);
@@ -37,7 +37,7 @@ public class MailService {
 
     String grantAdminUrl = baseUrl + "/api/v1/user-accounts/grantAdminRights?id="
         + userAccount.getUserAccountId();
-    String message = "The user " + userAccount.getMemberUserAccount().getFirstName()
+    String message = "The user " + userAccount.getMemberUserAccount().getName()
         + " has just been verified please grant him or her admin priviliges in the membermanagement application" + "\r\n" +  grantAdminUrl;
 
     SimpleMailMessage email = new SimpleMailMessage();

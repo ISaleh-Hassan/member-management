@@ -56,8 +56,7 @@ public class UserAccountService {
 
             else if (mobileNumberExists == null && !userExistsByEmail && !userExistsByUsername) {
                 var member = new Member();
-                member.setFirstName(memberDto.getFirstName());
-                member.setLastName(memberDto.getLastName());
+                member.setName(memberDto.getName());
                 member.setMobileNumber(memberDto.getMobileNumber());
 
                 var userAccount = new UserAccount();

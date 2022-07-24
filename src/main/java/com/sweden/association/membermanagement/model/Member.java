@@ -24,11 +24,8 @@ public class Member {
     @Column(name = "member_id")
     private long memberId;
 
-    @Column(name = "first_name", nullable = false, length = 50)
-    private String firstName;
-
-    @Column(name = "last_name", nullable = false, length = 50)
-    private String lastName;
+    @Column(name = "name", nullable = false, length = 50)
+    private String name;
 
     @Column(name = "mobile_number", nullable = false, unique = true, length = 12)
     private String mobileNumber;
@@ -56,20 +53,12 @@ public class Member {
         this.userAccount = userAccount;
     }
 
-    public String getFirstName() {
-        return firstName;
+    public String getName() {
+        return name;
     }
 
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
-
-    public String getLastName() {
-        return lastName;
-    }
-
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getMobileNumber() {
@@ -95,13 +84,24 @@ public class Member {
         if (!(o instanceof Member))
             return false;
         Member member = (Member) o;
-        return memberId == member.memberId && Objects.equals(firstName, member.firstName)
-                && Objects.equals(lastName, member.lastName) && Objects.equals(mobileNumber, member.mobileNumber)
+        return memberId == member.memberId && Objects.equals(name, member.name)
+                && Objects.equals(mobileNumber, member.mobileNumber)
                 && Objects.equals(payments, member.payments) && Objects.equals(userAccount, member.userAccount);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(memberId, firstName, lastName, mobileNumber, payments, userAccount);
+        return Objects.hash(memberId, name, mobileNumber, payments, userAccount);
+    }
+
+    @Override
+    public String toString() {
+        return "Member{" +
+                "memberId=" + memberId +
+                ", name='" + name + '\'' +
+                ", mobileNumber='" + mobileNumber + '\'' +
+                ", payments=" + payments +
+                ", userAccount=" + userAccount +
+                '}';
     }
 }
