@@ -2,6 +2,7 @@ package com.sweden.association.membermanagement.service;
 
 import com.sweden.association.membermanagement.model.Member;
 import com.sweden.association.membermanagement.model.Payment;
+import com.sweden.association.membermanagement.model.PaymentType;
 import com.sweden.association.membermanagement.repository.PaymentRepository;
 import com.sweden.association.membermanagement.validator.CsvHelper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +16,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Logger;
 
 import static com.sweden.association.membermanagement.validator.CsvHelper.VALID_HEADER;
@@ -36,7 +38,7 @@ public class PaymentService {
     public void addPayments(MultipartFile selectedFile) {
         CsvHelper.isValidSwedBankCsvFile(CsvHelper.tryReadCsvFileWithCommaSeparator(selectedFile, 0));
         List<String[]> transactions = CsvHelper.tryReadCsvFileWithCommaSeparator(selectedFile, 2);
-        List<Payment> swishTransactions = getMapOfAllSwishTransactions(transactions);
+        List<Payment> swishTransactions = getPaymentsMap(transactions).get(PaymentType.SWISH);
         // TODO: As for now, we need to clear the db before adding new payments due to the limitation we have in the db.
         //  If the client will pay for the application, we will make it possible to save historical payments
         deleteAllPayments();
@@ -52,8 +54,10 @@ public class PaymentService {
         paymentRepository.deleteAll();
     }
 
-    private List<Payment> getMapOfAllSwishTransactions(List<String[]> transactions) {
-        List<Payment> payments = new ArrayList<>();
+    private Map<PaymentType, List<Payment>> getPaymentsMap(List<String[]> transactions) {
+        List<Payment> swishPayments = new ArrayList<>();
+        List<Payment> bankGiroPayments = new ArrayList<>();
+        List<Payment> transferPayments = new ArrayList<>();
         transactions.forEach(transaction -> {
             if (transaction.length != VALID_HEADER.length) {
                 LOGGER.warning(Arrays.toString(transaction));
@@ -71,10 +75,16 @@ public class PaymentService {
                 payment.setAmount(amount);
                 payment.setTransactionDate(LocalDate.parse(date));
                 payment.setPayer(member);
-                payments.add(payment);
+                swishPayments.add(payment);
+            } else if(description.contains("Bank giro")){
+                //TODO: This is will be handled when we start to support bankGiro payments
+                bankGiroPayments.add(null);
+            } else if(description.contains("Transfer")){
+                //TODO: This is will be handled when we start to support Transfer payments
+                transferPayments.add(null);
             }
         });
-        return payments;
+        return Map.of(PaymentType.SWISH, swishPayments, PaymentType.BANK_GIRO, bankGiroPayments, PaymentType.TRANSFER, transferPayments);
     }
 
 }

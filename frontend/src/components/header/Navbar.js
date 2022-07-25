@@ -119,8 +119,10 @@ const Navbar = props => {
               textDecoration: 'none',
             }}
           >
-            LOGO
+            Jalia
           </Typography>
+          {props.isAuthorized ?
+          <>
           <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
              {Object.keys(props.routeMap).map(key => (
               <Button
@@ -163,6 +165,9 @@ const Navbar = props => {
               ))}
             </Menu>
           </Box>
+          </>:null 
+        }
+          
         </Toolbar>
       </Container>
     </AppBar>
