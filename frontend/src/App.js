@@ -28,17 +28,13 @@ function App() {
 
   return (
     <div className="App">
-      <Navbar routeMap={routeMap} settings={settings} />
-      <ul>
-        <li>
-          <Link to="/">Login</Link>
-        </li>
-        <li>
-          <Link to="/Registration">Register</Link>
-        </li>
-      </ul>
+      <Navbar routeMap={routeMap} settings={settings} isAuthorized={isAuthorized}/>
       <Routes>
-        <Route path="/" element={<Login isAuthorized={isAuthorized} />} />
+        <Route path="/" element={
+          <ProtectedRoute>
+            <MemberAdministration />
+          </ProtectedRoute>
+        } />
         <Route path="registration" element={<Registration isAuthorized={isAuthorized} />} />
         <Route path="member-payment-management" element={
           <ProtectedRoute>
@@ -51,7 +47,7 @@ function App() {
           </ProtectedRoute>
         } />
         <Route path="login" element={<Login isAuthorized={isAuthorized} />} />
-        <Route path="registration" element={<Registration isAuthorized={isAuthorized}/>} />
+        <Route path="registration" element={<Registration isAuthorized={isAuthorized} />} />
         {showRegistrationInformation[0] === true ? (<Route path="registration-information" element={<RegistrationInformation />} />) : null}
       </Routes>
     </div>
