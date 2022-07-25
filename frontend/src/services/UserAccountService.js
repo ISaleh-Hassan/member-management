@@ -2,23 +2,23 @@ import axios from "axios";
 
 const UserAccountService = {
   loginAsync: async function (userName, password) {
-    axios
+   const loginPromise = axios
       .get(process.env.REACT_APP_BASE_SERVER_URL + "user-accounts/login", {
         params: { userName: userName, password: password },
       })
-      .then((res) => {
+     const loginDataPromise = loginPromise.then((res) => {
         console.log(res);
-        if (res.status === 200 && res.data != null) {
+        if (res.status === 200 && res.data.jwtToken != null) {
           sessionStorage.setItem("jwtToken", res.data.jwtToken);
-        } else {
-          alert("fel användarnamn eller lösenord");
-        }
+        } 
+        return res.data;
       })
       .catch((err) => {
         console.log(err);
-        return false;
       });
+      return loginDataPromise;
   },
+
   logoutAsync: async function () {
     sessionStorage.removeItem("jwtToken");
   },

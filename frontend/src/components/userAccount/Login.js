@@ -4,8 +4,9 @@ import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
-import Visibility from "@mui/material/Icon";
-import VisibilityOff from "@mui/material/Icon";
+
+import VisibilityIcon from "@mui/icons-material/Visibility";
+import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 import InputAdornment from "@mui/material/InputAdornment";
 import IconButton from "@mui/material/IconButton";
 import Input from "@mui/material/Input";
@@ -13,39 +14,35 @@ import FilledInput from "@mui/material/FilledInput";
 import OutlinedInput from "@mui/material/OutlinedInput";
 import InputLabel from "@mui/material/InputLabel";
 import UserAccountService from "../../services/UserAccountService";
-import {Link} from "react-router-dom";
+import { Link } from "react-router-dom";
 
 function Login(props) {
   const [userName, setUserName] = useState("");
   const [password, setPassword] = useState("");
+  const [invalidCredentials, setInvalidCredentials] = useState(false);
   const navigate = useNavigate();
-  
+
   useEffect(() => {
     if (props.isAuthorized) {
       navigate("/member-administration");
     }
   });
-  const [values, setValues] = useState({
-    amount: "",
-    password: "",
-    weight: "",
-    weightRange: "",
-    showPassword: false,
-  });
-
-  const handleClickShowPassword = () => {
-    setValues({
-      ...values,
-      showPassword: !values.showPassword,
-    });
+  const [showPassword, setShowPassword] = useState(false);
+  // Password toggle handler
+  const togglePassword = () => {
+    setShowPassword(!showPassword);
   };
-
   const handleMouseDownPassword = (event) => {
     event.preventDefault();
   };
+
   const login = (e) => {
     e.preventDefault();
-    UserAccountService.loginAsync(userName, password);
+    UserAccountService.loginAsync(userName, password).then((res) => {
+      if (res.jwtToken == null) {
+        setInvalidCredentials(true);
+      }
+    });
   };
   return (
     <Grid container spacing={2}>
@@ -63,27 +60,34 @@ function Login(props) {
       </Grid>
       <Grid item xs={12}>
         <TextField
-          type="password"
+          type={showPassword ? "text" : "password"}
           label="password"
           onChange={(e) => setPassword(e.target.value)}
           value={password}
           required
           error={password === ""}
           helperText={password === "" ? "Empty field!" : " "}
-          endAdornment={
-            <InputAdornment position="end">
-              <IconButton
-                aria-label="toggle password visibility"
-                onClick={handleClickShowPassword}
-                onMouseDown={handleMouseDownPassword}
-                edge="end"
-              >
-                {values.showPassword ? <VisibilityOff /> : <Visibility />}
-              </IconButton>
-            </InputAdornment>
-          }
+          InputProps={{
+            endAdornment: (
+              <InputAdornment position="end">
+                <IconButton
+                  aria-label="toggle password visibility"
+                  onClick={togglePassword}
+                  edge="end"
+                  onMouseDown={handleMouseDownPassword}
+                >
+                  {showPassword ? <VisibilityIcon /> : <VisibilityOffIcon />}
+                </IconButton>
+              </InputAdornment>
+            ),
+          }}
         ></TextField>
       </Grid>
+      {invalidCredentials ? (
+        <Grid item xs={12}>
+          <p style={{ color: "red" }}>Wrong username or password!</p>
+        </Grid>
+      ) : null}
       <Grid item xs={12}>
         <div>
           Dont have an account? Register
