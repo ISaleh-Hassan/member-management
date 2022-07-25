@@ -50,14 +50,14 @@ export default function Registration(props) {
       password.length > 0 &&
       password === confirmPassword
     ) {
-      let userClient = {
+      let registerUser = {
         name: name,
         mobileNumber: "+46" + mobileNumber,
         email: email,
         username: username,
         password: password,
       };
-      UserAccountService.registerAsync(userClient).then((res) => {
+      UserAccountService.registerAsync(registerUser).then((res) => {
         if (res.usernameExists) {
           setUsernameErrorText("username already exists");
         }

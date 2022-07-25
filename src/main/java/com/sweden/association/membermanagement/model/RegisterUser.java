@@ -1,6 +1,6 @@
 package com.sweden.association.membermanagement.model;
 
-public class UserClient {
+public class RegisterUser {
     public String username;
     public String name;
     public String mobileNumber;

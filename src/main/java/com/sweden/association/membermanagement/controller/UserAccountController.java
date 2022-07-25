@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import com.sweden.association.membermanagement.dto.MemberDto;
-import com.sweden.association.membermanagement.model.UserClient;
+import com.sweden.association.membermanagement.model.RegisterUser;
 import com.sweden.association.membermanagement.model.UserAccount;
 import com.sweden.association.membermanagement.service.MailService;
 import com.sweden.association.membermanagement.service.UserAccountService;
@@ -53,17 +53,16 @@ public class UserAccountController {
 
   @PostMapping(value = "/user-accounts/register", consumes = "application/json", produces = "application/json")
   public JwtResponse register(
-      @RequestBody UserClient userClient) {
+      @RequestBody RegisterUser registerUser) {
     try {
-
       var memberDto = new MemberDto();
-      memberDto.setName(userClient.name);
-      memberDto.setMobileNumber(userClient.mobileNumber);
+      memberDto.setName(registerUser.name);
+      memberDto.setMobileNumber(registerUser.mobileNumber);
 
       var userAccount = new UserAccount();
-      userAccount.setEmail(userClient.email);
-      userAccount.setUserName(userClient.username);
-      userAccount.setPassword(userClient.password);
+      userAccount.setEmail(registerUser.email);
+      userAccount.setUserName(registerUser.username);
+      userAccount.setPassword(registerUser.password);
 
       UserAccountValidator.validateUserAccount(userAccount);
       memberDto.setUserAccount(userAccount);
