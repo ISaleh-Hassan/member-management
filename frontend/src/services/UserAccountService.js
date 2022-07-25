@@ -8,9 +8,12 @@ const UserAccountService = {
       })
      const loginDataPromise = loginPromise.then((res) => {
         console.log(res);
-        if (res.status === 200 && res.data.jwtToken != null) {
-          sessionStorage.setItem("jwtToken", res.data.jwtToken);
-        } 
+        if (res.status === 200 && res.data.jwtToken != null && res.data.isActive) {
+          localStorage.setItem("jwtToken", res.data.jwtToken);
+          if(res.data.isAdmin){
+            localStorage.setItem("isAdmin", true)
+          }
+        }
         return res.data;
       })
       .catch((err) => {
@@ -20,39 +23,24 @@ const UserAccountService = {
   },
 
   logoutAsync: async function () {
-    sessionStorage.removeItem("jwtToken");
+    localStorage.removeItem("jwtToken");
   },
 
   registerAsync: async function (
-    name,
-    mobileNumber,
-    email,
-    username,
-    password
+  userClient
   ) {
     const promise = axios.post(process.env.REACT_APP_BASE_SERVER_URL + 
       "user-accounts/register",
-      null,
-      {
-        params: {
-          name,
-          mobileNumber,
-          email,
-          username,
-          password,
-        },
-      }
+      userClient
     );
-
     const dataPromise = promise
       .then((res) => {
         console.log(res);
         if (
           res.status === 200 &&
-          /*res.data.jwtToken != null &&*/
           res.data.userRegisteredSuccess
         ) {
-          // sessionStorage.setItem("jwtToken", res.data.jwtToken);
+          // localStorage.setItem("jwtToken", res.data.jwtToken);
         }
         return res.data;
       })

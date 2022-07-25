@@ -30,7 +30,14 @@ public class UserAccountService {
             UserAccount userAccount = userAccountRepository.findByUsernameAndPassword(userName, password);
             if (userAccount != null) {
                 JwtUtility jwtUtility = new JwtUtility();
-                jwtResponse.setJwtToken(jwtUtility.generateToken(userAccount));
+                if (userAccount.getIsActivated()) {
+                    jwtResponse.setJwtToken(jwtUtility.generateToken(userAccount));
+                }
+                jwtResponse.setInvalidCredentials(false);
+                jwtResponse.setIsActivated(userAccount.getIsActivated());
+                jwtResponse.setIsAdmin(userAccount.getIsAdmin());
+            } else {
+                jwtResponse.setInvalidCredentials(true);
             }
             return jwtResponse;
         } catch (Exception ex) {
@@ -80,10 +87,6 @@ public class UserAccountService {
                 member.setUserAccount(userAccount);
 
                 memberRepository.save(member);
-
-                // userAccountRepository.save(userAccount);
-
-                // jwtResponse.setJwtToken(jwtUtility.generateToken(userAccount));
 
                 mailService.sendConfirmRegistration(userAccount);
                 jwtResponse.setUserRegisteredSuccess(true);

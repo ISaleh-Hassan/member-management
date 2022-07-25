@@ -13,8 +13,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import com.sweden.association.membermanagement.dto.MemberDto;
+import com.sweden.association.membermanagement.model.UserClient;
 import com.sweden.association.membermanagement.model.UserAccount;
 import com.sweden.association.membermanagement.service.MailService;
 import com.sweden.association.membermanagement.service.UserAccountService;
@@ -22,7 +24,8 @@ import com.sweden.association.membermanagement.service.UserAccountService;
 import com.sweden.association.membermanagement.utility.JwtResponse;
 import com.sweden.association.membermanagement.validator.UserAccountValidator;
 
-@CrossOrigin(origins = { "http://localhost:3000", "https://localhost:3000", "https://member-payments-management.herokuapp.com"})
+@CrossOrigin(origins = { "http://localhost:3000", "https://localhost:3000",
+    "https://member-payments-management.herokuapp.com" })
 @RestController
 @RequestMapping("/api/v1")
 public class UserAccountController {
@@ -48,19 +51,19 @@ public class UserAccountController {
     }
   }
 
-  @PostMapping("/user-accounts/register")
-  public JwtResponse register(@RequestParam String name,
-      @RequestParam String mobileNumber,
-      @RequestParam String email, @RequestParam String username, @RequestParam String password) {
+  @PostMapping(value = "/user-accounts/register", consumes = "application/json", produces = "application/json")
+  public JwtResponse register(
+      @RequestBody UserClient userClient) {
     try {
+
       var memberDto = new MemberDto();
-      memberDto.setName(name);
-      memberDto.setMobileNumber(mobileNumber);
+      memberDto.setName(userClient.name);
+      memberDto.setMobileNumber(userClient.mobileNumber);
 
       var userAccount = new UserAccount();
-      userAccount.setEmail(email);
-      userAccount.setUserName(username);
-      userAccount.setPassword(password);
+      userAccount.setEmail(userClient.email);
+      userAccount.setUserName(userClient.username);
+      userAccount.setPassword(userClient.password);
 
       UserAccountValidator.validateUserAccount(userAccount);
       memberDto.setUserAccount(userAccount);

@@ -6,6 +6,33 @@ public class JwtResponse {
     private Boolean usernameExists;
     private Boolean emailExists;
     private Boolean userRegisteredSuccess;
+    private Boolean isAdmin;
+    private Boolean isActivated;
+    private Boolean invalidCredentials;
+
+    public Boolean getInvalidCredentials() {
+        return invalidCredentials;
+    }
+
+    public void setInvalidCredentials(Boolean invalidCredentials) {
+        this.invalidCredentials = invalidCredentials;
+    }
+
+    public Boolean getIsActivated() {
+        return isActivated;
+    }
+
+    public void setIsActivated(Boolean isActivated) {
+        this.isActivated = isActivated;
+    }
+
+    public Boolean getIsAdmin() {
+        return isAdmin;
+    }
+
+    public void setIsAdmin(Boolean isAdmin) {
+        this.isAdmin = isAdmin;
+    }
 
     public Boolean getUserRegisteredSuccess() {
         return userRegisteredSuccess;

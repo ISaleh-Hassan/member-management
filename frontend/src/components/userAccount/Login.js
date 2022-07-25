@@ -19,7 +19,7 @@ import { Link } from "react-router-dom";
 function Login(props) {
   const [userName, setUserName] = useState("");
   const [password, setPassword] = useState("");
-  const [invalidCredentials, setInvalidCredentials] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -39,8 +39,11 @@ function Login(props) {
   const login = (e) => {
     e.preventDefault();
     UserAccountService.loginAsync(userName, password).then((res) => {
-      if (res.jwtToken == null) {
-        setInvalidCredentials(true);
+      setErrorMessage("")
+      if (res.invalidCredentials) {
+        setErrorMessage("Wrong username or password!");
+      } else if (!res.isActivated) {
+        setErrorMessage("User is not activated! Please confirm your email to activate your account");
       }
     });
   };
@@ -54,7 +57,6 @@ function Login(props) {
           required
           onChange={(e) => setUserName(e.target.value)}
           value={userName}
-          error={userName === ""}
           helperText={userName === "" ? "Empty field!" : " "}
         ></TextField>
       </Grid>
@@ -65,7 +67,6 @@ function Login(props) {
           onChange={(e) => setPassword(e.target.value)}
           value={password}
           required
-          error={password === ""}
           helperText={password === "" ? "Empty field!" : " "}
           InputProps={{
             endAdornment: (
@@ -83,9 +84,9 @@ function Login(props) {
           }}
         ></TextField>
       </Grid>
-      {invalidCredentials ? (
+      {errorMessage ? (
         <Grid item xs={12}>
-          <p style={{ color: "red" }}>Wrong username or password!</p>
+          <p style={{ color: "red" }}>{errorMessage}</p>
         </Grid>
       ) : null}
       <Grid item xs={12}>

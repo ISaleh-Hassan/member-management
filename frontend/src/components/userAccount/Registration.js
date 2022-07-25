@@ -50,13 +50,14 @@ export default function Registration(props) {
       password.length > 0 &&
       password === confirmPassword
     ) {
-      UserAccountService.registerAsync(
-        name,
-        "+46" + mobileNumber,
-        email,
-        username,
-        password
-      ).then((res) => {
+      let userClient = {
+        name: name,
+        mobileNumber: "+46" + mobileNumber,
+        email: email,
+        username: username,
+        password: password,
+      };
+      UserAccountService.registerAsync(userClient).then((res) => {
         if (res.usernameExists) {
           setUsernameErrorText("username already exists");
         }
@@ -117,7 +118,6 @@ export default function Registration(props) {
           }
           onBlur={(e) => handleChange(e)}
           value={name}
-          error={name === ""}
           helperText={errors.name}
         ></TextField>
       </Grid>
@@ -142,7 +142,6 @@ export default function Registration(props) {
             onChange={(e) => setMobileNumber(e.target.value)}
             onBlur={(e) => handleChange(e)}
             value={mobileNumber}
-            error={mobileNumber === ""}
             helperText={errors.mobileNumber}
           ></TextField>
         </>
@@ -157,7 +156,6 @@ export default function Registration(props) {
           onChange={(e) => setEmail(e.target.value)}
           onBlur={(e) => onBlurChange(e)}
           value={email}
-          error={email === ""}
           helperText={emailErrorText}
         ></TextField>
       </Grid>
@@ -171,7 +169,6 @@ export default function Registration(props) {
           onChange={(e) => setUsername(e.target.value)}
           onBlur={(e) => onBlurChange(e)}
           value={username}
-          error={username === ""}
           helperText={usernameErrorText}
         ></TextField>
       </Grid>
@@ -184,7 +181,6 @@ export default function Registration(props) {
           onChange={(e) => setPassword(e.target.value)}
           value={password}
           required
-          error={password === ""}
           helperText={errors.password}
           onBlur={(e) => handleChange(e)}
           InputProps={{
@@ -212,7 +208,6 @@ export default function Registration(props) {
           value={confirmPassword}
           onChange={(e) => setConfirmPassword(e.target.value)}
           required
-          error={confirmPassword === ""}
           helperText={errors.confirmPassword}
           onBlur={(e) => handleChange(e, password)}
         ></TextField>
