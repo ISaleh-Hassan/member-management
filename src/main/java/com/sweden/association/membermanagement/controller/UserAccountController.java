@@ -5,6 +5,8 @@ import java.util.Locale;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -52,7 +54,7 @@ public class UserAccountController {
   }
 
   @PostMapping(value = "/user-accounts/register", consumes = "application/json", produces = "application/json")
-  public JwtResponse register(
+  public ResponseEntity<JwtResponse> register(
       @RequestBody RegisterUser registerUser) {
     try {
       var memberDto = new MemberDto();
@@ -67,9 +69,11 @@ public class UserAccountController {
       UserAccountValidator.validateUserAccount(userAccount);
       memberDto.setUserAccount(userAccount);
       var response = userAccountService.register(memberDto);
-      return response;
+      return new ResponseEntity<>(response, HttpStatus.OK);
     } catch (Exception ex) {
-      return null;
+      JwtResponse jwtResponse = new JwtResponse();
+      jwtResponse.setExceptionMessage(ex.getMessage());
+      return new ResponseEntity<>(jwtResponse, HttpStatus.BAD_REQUEST);
     }
   }
 

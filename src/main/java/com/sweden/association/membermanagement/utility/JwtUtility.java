@@ -47,8 +47,12 @@ public class JwtUtility implements Serializable {
     private String createToken(Map<String, Object> claims, String subject) {
 
         return Jwts.builder().setClaims(claims).setSubject(subject).setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 15)) // set 15 minutes
+                .setExpiration(generateExpirationDate(15L)) // set 15 minutes
                 .signWith(SignatureAlgorithm.HS256, Base64.getEncoder().encodeToString(secretKey.getBytes())).compact();
+    }
+
+    public static Date generateExpirationDate(Long minutes) {
+        return new Date(System.currentTimeMillis() + 1000 * 60 * minutes);
     }
 
     public Boolean validateToken(String token, UserAccount userAccount) {

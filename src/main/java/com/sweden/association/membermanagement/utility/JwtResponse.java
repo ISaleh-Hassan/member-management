@@ -9,6 +9,7 @@ public class JwtResponse {
     private Boolean isAdmin;
     private Boolean isActivated;
     private Boolean invalidCredentials;
+    private String exceptionMessage;
 
     public Boolean getInvalidCredentials() {
         return invalidCredentials;
@@ -80,5 +81,13 @@ public class JwtResponse {
 
     public void setJwtToken(String jwtToken) {
         this.jwtToken = jwtToken;
+    }
+
+    public String getExceptionMessage() {
+        return exceptionMessage;
+    }
+
+    public void setExceptionMessage(String exceptionMessage) {
+        this.exceptionMessage = exceptionMessage;
     }
 }

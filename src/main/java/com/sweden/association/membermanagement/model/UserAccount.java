@@ -38,7 +38,23 @@ public class UserAccount {
     private String verificationToken;
 
     @Column(name = "verification_token_expiry_date", nullable = false)
-    private Timestamp verificationTokenExpiryDate;;
+    private Timestamp verificationTokenExpiryDate;
+
+    @OneToOne()
+    @JoinColumn(name = "member_id")
+    private Member memberUserAccount;
+
+    @OneToOne()
+    @JoinColumn(name = "user_account_id")
+    private AuthenticationSession userAccountAuthenticationSession;
+
+    public AuthenticationSession getUserAccountAuthenticationSession() {
+        return userAccountAuthenticationSession;
+    }
+
+    public void setUserAccountAuthenticationSession(AuthenticationSession userAccountAuthenticationSession) {
+        this.userAccountAuthenticationSession = userAccountAuthenticationSession;
+    }
 
     public Boolean getIsActivated() {
         return isActivated;
@@ -47,10 +63,6 @@ public class UserAccount {
     public void setIsActivated(Boolean isActivated) {
         this.isActivated = isActivated;
     }
-
-    @OneToOne()
-    @JoinColumn(name = "member_id")
-    private Member memberUserAccount;
 
     public String getUsername() {
         return username;

@@ -1,8 +1,12 @@
 package com.sweden.association.membermanagement.service;
 
 import java.sql.Timestamp;
+import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
+import com.sweden.association.membermanagement.model.AuthenticationSession;
+import com.sweden.association.membermanagement.repository.AuthenticationSessionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -23,15 +27,20 @@ public class UserAccountService {
     @Autowired
     private MemberRepository memberRepository;
     @Autowired
+    private AuthenticationSessionRepository authenticationSessionRepository;
+    @Autowired
     private MailService mailService;
 
     public JwtResponse login(String userName, String password) {
         try {
             UserAccount userAccount = userAccountRepository.findByUsernameAndPassword(userName, password);
+
             if (userAccount != null) {
                 JwtUtility jwtUtility = new JwtUtility();
                 if (userAccount.getIsActivated()) {
-                    jwtResponse.setJwtToken(jwtUtility.generateToken(userAccount));
+                    String token = jwtUtility.generateToken(userAccount);
+                    jwtResponse.setJwtToken(token);
+                    handleUserAccountAuthenticationSession(userAccount, token);
                 }
                 jwtResponse.setInvalidCredentials(false);
                 jwtResponse.setIsActivated(userAccount.getIsActivated());
@@ -43,6 +52,24 @@ public class UserAccountService {
         } catch (Exception ex) {
             return jwtResponse;
         }
+    }
+
+    private void handleUserAccountAuthenticationSession(UserAccount userAccount, String token) {
+        List<AuthenticationSession> authenticationSessions = authenticationSessionRepository
+                .findAll()
+                .stream()
+                .filter(authenticationSession -> authenticationSession.getUserAccount().equals(userAccount))
+                .collect(Collectors.toList());
+
+        // We start by removing all tokens that are related to this userAccount
+        authenticationSessions.forEach(authenticationSession ->
+                authenticationSessionRepository.deleteById(authenticationSession.getAuthentication_session_id()));
+
+        AuthenticationSession authenticationSession = new AuthenticationSession();
+        authenticationSession.setUserAccount(userAccount);
+        authenticationSession.setToken(token);
+        authenticationSession.setTokenExpiryTimestamp(JwtUtility.generateExpirationDate(60L));
+        authenticationSessionRepository.save(authenticationSession);
     }
 
     public JwtResponse register(MemberDto memberDto) {
