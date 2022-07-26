@@ -13,6 +13,7 @@ import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import AdbIcon from '@mui/icons-material/Adb';
 import {Link} from 'react-router-dom'
+import UserAccountService from '../../services/UserAccountService';
 
 
 
@@ -32,9 +33,8 @@ const Navbar = props => {
   };
 
   const handleCloseUserMenu = setting => {
-    //TODO: Not a very nice solution but can be enhanced in the future.
     if(setting === "Logout"){
-      sessionStorage.removeItem("jwtToken")
+      UserAccountService.logoutAsync();
     }
     setAnchorElUser(null);
   };

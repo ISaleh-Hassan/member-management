@@ -53,6 +53,24 @@ public class UserAccountController {
     }
   }
 
+  @PostMapping("/user-accounts/logout")
+  public ResponseEntity<String> logout(@RequestParam String token) {
+    try {
+      return new ResponseEntity<>(userAccountService.logout(token), HttpStatus.OK);
+    } catch (Exception ex) {
+       return new ResponseEntity<>(ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
+
+  @PostMapping("/user-accounts/validate-token")
+  public ResponseEntity<Boolean> validateToken(@RequestParam String token) {
+    try {
+      return new ResponseEntity<>(userAccountService.validateToken(token), HttpStatus.OK);
+    } catch (Exception ex) {
+      return new ResponseEntity<>(false, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
+
   @PostMapping(value = "/user-accounts/register", consumes = "application/json", produces = "application/json")
   public ResponseEntity<JwtResponse> register(
       @RequestBody RegisterUser registerUser) {

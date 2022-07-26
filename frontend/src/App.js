@@ -23,9 +23,15 @@ const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
 
 function App() {
   const showRegistrationInformation = useGlobalState("showRegistrationInformation");
-  // TODO: This is a temporary solution for the routing until we have a good way to check the token
-  const isAuthorized = localStorage.getItem("jwtToken") !== null;
-
+  const token = localStorage.getItem("jwtToken");
+  const [isAuthorized, setIsAuthorized] = React.useState(false)
+  //TODO: I need to check how to make the endpoint call from here. The endpoint is working but not here
+  React.useEffect(() => {
+    if(token !== null && token !== undefined){
+      const x = UserAccountService.validateToken(token);
+      x.then(res => setIsAuthorized(res))
+    }
+  },[])
   return (
     <div className="App">
       <Navbar routeMap={routeMap} settings={settings} isAuthorized={isAuthorized}/>

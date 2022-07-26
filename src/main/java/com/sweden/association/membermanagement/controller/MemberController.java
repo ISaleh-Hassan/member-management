@@ -31,7 +31,11 @@ public class MemberController {
 
     @GetMapping("/members")
     public ResponseEntity<List<Member>> getAllMembers() {
-        return new ResponseEntity<>(memberService.getAllMembers(), HttpStatus.OK);
+        try {
+            return new ResponseEntity<>(memberService.getAllMembers(), HttpStatus.OK);
+        } catch (Exception ex) {
+             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     @RequestMapping(path="/members/migrate-all", method = RequestMethod.POST, consumes = { "multipart/form-data" })
