@@ -41,7 +41,7 @@ function App() {
             <MemberAdministration />
           </ProtectedRoute>
         } />
-        <Route path="registration" element={<Registration isAuthorized={isAuthorized} />} />
+        <Route path="registration" element={<Registration />} />
         <Route path="member-payment-management" element={
           <ProtectedRoute>
             <MemberPayments />
@@ -52,8 +52,8 @@ function App() {
             <MemberAdministration />
           </ProtectedRoute>
         } />
-        <Route path="login" element={<Login isAuthorized={isAuthorized} />} />
-        <Route path="registration" element={<Registration isAuthorized={isAuthorized} />} />
+        <Route path="login" element={<Login />} />
+        <Route path="registration" element={<Registration />} />
         {showRegistrationInformation[0] === true ? (<Route path="registration-information" element={<RegistrationInformation />} />) : null}
       </Routes>
     </div>

@@ -27,11 +27,6 @@ export default function Registration(props) {
   const { inputValues, errors, handleChange } = useFormValidation();
   const navigate = useNavigate();
 
-  useEffect(() => {
-    if (props.isAuthorized) {
-      navigate("/member-administration");
-    }
-  });
   const [showPassword, setShowPassword] = useState(false);
   // Password toggle handler
   const togglePassword = () => {

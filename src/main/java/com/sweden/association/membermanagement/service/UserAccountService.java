@@ -167,6 +167,7 @@ public class UserAccountService {
             return jwtResponse;
 
         } catch (Exception e) {
+            System.err.println(e.getMessage());
             jwtResponse.setUserRegisteredSuccess(false);
             jwtResponse.setExceptionMessage(e.getMessage());
             return jwtResponse;

@@ -1,13 +1,12 @@
 package com.sweden.association.membermanagement.service;
 
+import com.sweden.association.membermanagement.model.UserAccount;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.mail.MailException;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
-
-import com.sweden.association.membermanagement.model.UserAccount;
 
 @Service
 public class MailService {
@@ -20,10 +19,11 @@ public class MailService {
   protected void sendConfirmRegistration(UserAccount userAccount) throws MailException {
     String subject = "Registration Confirmation";
     final String baseUrl = env.getProperty("base.url");
-
+    final String sentFrom = env.getProperty("spring.mail.username");
     String confirmationUrl = baseUrl + "/api/v1/user-accounts/registrationConfirm?token="+ userAccount.getVerificationToken();
     String message = "Hi " + userAccount.getMemberUserAccount().getName() + " please click this link to verify your email address needed for accessing the member management application";
     SimpleMailMessage email = new SimpleMailMessage();
+    email.setFrom(sentFrom);
     email.setTo(userAccount.getEmail());
     email.setSubject(subject);
     email.setText(message + "\r\n" + confirmationUrl);
