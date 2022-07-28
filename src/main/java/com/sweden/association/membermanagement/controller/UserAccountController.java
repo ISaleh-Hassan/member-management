@@ -1,5 +1,6 @@
 package com.sweden.association.membermanagement.controller;
 
+import java.net.URI;
 import java.util.Calendar;
 import java.util.Locale;
 
@@ -10,19 +11,19 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.context.request.WebRequest;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 
 import com.sweden.association.membermanagement.dto.MemberDto;
 import com.sweden.association.membermanagement.model.RegisterUser;
 import com.sweden.association.membermanagement.model.UserAccount;
 import com.sweden.association.membermanagement.service.MailService;
 import com.sweden.association.membermanagement.service.UserAccountService;
-
 import com.sweden.association.membermanagement.utility.JwtResponse;
 import com.sweden.association.membermanagement.validator.UserAccountValidator;
 
@@ -77,26 +78,46 @@ public class UserAccountController {
     }
   }
 
+  // the responses have to be changed to something better... Carl
+  @PutMapping(value = "/user-accounts", consumes = "application/json", produces = "application/json")
+  public ResponseEntity<String> update(
+      @RequestBody UserAccount userAccount) {
+    try {
+      var response = userAccountService.updateUserAccount(userAccount);
+      return new ResponseEntity<>(response, HttpStatus.OK);
+    } catch (Exception ex) {
+      return new ResponseEntity<>("error", HttpStatus.BAD_REQUEST);
+    }
+  }
+
   @GetMapping("/user-accounts/registrationConfirm")
-  public String confirmRegistration(WebRequest request, Model model, @RequestParam("token") String token)
+  public ResponseEntity<Object> confirmRegistration(WebRequest request, Model model,
+      @RequestParam("token") String token)
       throws Exception {
     Locale locale = request.getLocale();
     if (token == null) {
       String message = messages.getMessage("auth.message.invalidToken", null, locale);
       model.addAttribute("message", message);
-      return "redirect:/badUser.html?lang=" + locale.getLanguage();
+      return ResponseEntity.status(HttpStatus.FOUND)
+          .location(URI.create("http://localhost:3000/invalidtoken"))
+          .build();
     }
     Calendar cal = Calendar.getInstance();
     var userAccount = userAccountService.getUserAccountByVerificationToken(token);
     if ((userAccount.getVerificationTokenExpiryDate().getTime() - cal.getTime().getTime()) <= 0) {
       String messageValue = messages.getMessage("auth.message.expired", null, locale);
       model.addAttribute("message", messageValue);
-      return "redirect:/badUser.html?lang=" + locale.getLanguage();
+      return ResponseEntity.status(HttpStatus.FOUND)
+          .location(URI.create("http://localhost:3000/invalidtoken"))
+          .build();
     }
     userAccount.setIsActivated(true);
     userAccountService.setUserAccountToActive(userAccount);
     mailService.sendGrantUserToAdmin(userAccount);
-    return "redirect:/login.html?lang=" + request.getLocale().getLanguage();
+
+    return ResponseEntity.status(HttpStatus.FOUND)
+        .location(URI.create("http://localhost:3000/thankyoupage"))
+        .build();
   }
 
   @GetMapping("/user-accounts/grantAdminRights")

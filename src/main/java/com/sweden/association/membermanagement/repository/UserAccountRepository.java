@@ -1,6 +1,9 @@
 package com.sweden.association.membermanagement.repository;
 
 import com.sweden.association.membermanagement.model.UserAccount;
+
+import java.util.List;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -16,4 +19,7 @@ public interface UserAccountRepository extends JpaRepository<UserAccount, Long> 
     Boolean findByEmail(@Param("email") @NonNull String email);
 
     UserAccount findByVerificationToken(@NonNull String verificationToken);
+
+    @Query(value = "SELECT * FROM user_account WHERE is_activated = false", nativeQuery = true)
+    List<UserAccount>findByAllIsNotActivated();
 }

@@ -71,7 +71,7 @@ export default function Registration(props) {
         if (res.userRegisteredSuccess) {
           setShowProgress(true);
           setGlobalState("showRegistrationInformation", true);
-          navigate("registration-information");
+          //navigate("registration-information");
         }
       });
     } else if (

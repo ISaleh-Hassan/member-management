@@ -34,7 +34,7 @@ public class Member {
     @LazyCollection(LazyCollectionOption.FALSE)
     private List<Payment> payments;
 
-    @OneToOne(mappedBy = "memberUserAccount", cascade = {CascadeType.ALL})
+    @OneToOne(mappedBy = "memberUserAccount")
     private UserAccount userAccount;
 
     public long getMemberId() {

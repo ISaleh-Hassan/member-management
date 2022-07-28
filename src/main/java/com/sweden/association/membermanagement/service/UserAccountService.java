@@ -1,24 +1,29 @@
 package com.sweden.association.membermanagement.service;
 
+import java.net.http.HttpRequest;
 import java.sql.Timestamp;
+import java.util.Calendar;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-import com.sweden.association.membermanagement.model.AuthenticationSession;
-import com.sweden.association.membermanagement.repository.AuthenticationSessionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import com.sweden.association.membermanagement.dto.MemberDto;
+import com.sweden.association.membermanagement.model.AuthenticationSession;
 import com.sweden.association.membermanagement.model.Member;
 import com.sweden.association.membermanagement.model.UserAccount;
+import com.sweden.association.membermanagement.repository.AuthenticationSessionRepository;
 import com.sweden.association.membermanagement.repository.MemberRepository;
 import com.sweden.association.membermanagement.repository.UserAccountRepository;
 import com.sweden.association.membermanagement.utility.JwtResponse;
 import com.sweden.association.membermanagement.utility.JwtUtility;
 
 @Service
+@EnableScheduling
 public class UserAccountService {
 
     JwtResponse jwtResponse = new JwtResponse();
@@ -62,8 +67,8 @@ public class UserAccountService {
                 .collect(Collectors.toList());
 
         // We start by removing all tokens that are related to this userAccount
-        authenticationSessions.forEach(authenticationSession ->
-                authenticationSessionRepository.deleteById(authenticationSession.getAuthentication_session_id()));
+        authenticationSessions.forEach(authenticationSession -> authenticationSessionRepository
+                .deleteById(authenticationSession.getAuthentication_session_id()));
 
         AuthenticationSession authenticationSession = new AuthenticationSession();
         authenticationSession.setUserAccount(userAccount);
@@ -103,18 +108,14 @@ public class UserAccountService {
 
                 String token = UUID.randomUUID().toString();
                 userAccount.setVerificationToken(token);
-
                 Timestamp timestamp = new Timestamp(System.currentTimeMillis());
                 int duration = (60 * 60) * 24 * 1000;
-
                 timestamp.setTime(timestamp.getTime() + duration);
 
                 userAccount.setVerificationTokenExpiryDate(timestamp);
-
-                member.setUserAccount(userAccount);
-
-                memberRepository.save(member);
-
+                userAccount.setMemberUserAccount(member);
+                userAccountRepository.save(userAccount);
+            
                 mailService.sendConfirmRegistration(userAccount);
                 jwtResponse.setUserRegisteredSuccess(true);
             }
@@ -127,10 +128,21 @@ public class UserAccountService {
         }
     }
 
+    //the return type has to be changed to something better ... Carl
+    public String updateUserAccount(UserAccount editUserAccount){
+        var userAccount = userAccountRepository.findById(editUserAccount.getUserAccountId()).get();
+        userAccount.setEmail(editUserAccount.getEmail());
+        userAccount.setPassword(editUserAccount.getPassword());
+        try{
+        userAccountRepository.save(userAccount);
+        }
+        catch(Exception ex){
+            return "error";
+        }
+        return "success";
+    }
     public UserAccount getUserAccountByVerificationToken(String token) {
         var userAccount = userAccountRepository.findByVerificationToken(token);
-        // var map = new HashMap<String, Date>();
-        // map.put(user.getVerificationToken(), user.getVerificationTokenExpiryDate());
         return userAccount;
     }
 
@@ -145,5 +157,24 @@ public class UserAccountService {
 
     public void setUserAccountToActive(UserAccount userAccount) {
         userAccountRepository.save(userAccount);
+    }
+
+    // executes every 60 second with a 1 second delay on application startup
+    @Scheduled(initialDelay = 1000L, fixedRateString = "PT1H")
+    private void deleteUserIfNotActivatedJob() throws InterruptedException {
+        deleteUserIfNotActivated();
+    }
+
+    private void deleteUserIfNotActivated() {
+        Calendar calendar = Calendar.getInstance();
+        var userAccounts = userAccountRepository.findByAllIsNotActivated();
+        try {
+            for (UserAccount userAccount : userAccounts) {
+                if (userAccount.getVerificationTokenExpiryDate().getTime() < calendar.getTime().getTime()) {
+                    userAccountRepository.delete(userAccount);
+                }
+            }
+        } catch (Exception ex) {
+        }
     }
 }
