@@ -3,11 +3,14 @@ package com.sweden.association.membermanagement.service;
 import java.net.http.HttpRequest;
 import java.sql.Timestamp;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -21,6 +24,7 @@ import com.sweden.association.membermanagement.repository.MemberRepository;
 import com.sweden.association.membermanagement.repository.UserAccountRepository;
 import com.sweden.association.membermanagement.utility.JwtResponse;
 import com.sweden.association.membermanagement.utility.JwtUtility;
+import org.springframework.web.server.ResponseStatusException;
 
 @Service
 @EnableScheduling
@@ -59,6 +63,48 @@ public class UserAccountService {
         }
     }
 
+    public String logout(String token){
+        UserAccount userAccount = getUserAccountByToken(token);
+        deleteAllAuthenticationSessionsThatAreRelatedToUserAccount(userAccount);
+        return String.format("The user %s was logged out successfully", userAccount.getUsername());
+    }
+
+    public Boolean validateToken(String token){
+        UserAccount userAccount = getUserAccountByToken(token);
+        Optional<AuthenticationSession> authSession = findAllAuthenticationSessionsThatAreRelatedToUserAccount(userAccount)
+                .stream().filter(auth -> auth.getToken().equals(token))
+                .findFirst();
+
+        if(userAccount == null || authSession.isEmpty()){
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "The given token is not related to any user");
+        }
+
+        return !authSession.get().getTokenExpiryTimestamp().before(new Date());
+    }
+
+    private UserAccount getUserAccountByToken(String token) {
+        AuthenticationSession authenticationSession = authenticationSessionRepository.findAuthenticationSessionByToken(token);
+        Optional<UserAccount> userAccount;
+
+        if(authenticationSession == null){
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "The given token is not valid");
+        }
+        userAccount = userAccountRepository.findById(authenticationSession.getUserAccount().getUserAccountId());
+        return userAccount.orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, "The given token is not valid"));
+    }
+
+    private void deleteAllAuthenticationSessionsThatAreRelatedToUserAccount(UserAccount userAccount) {
+        findAllAuthenticationSessionsThatAreRelatedToUserAccount(userAccount)
+                .forEach(authenticationSession -> authenticationSessionRepository.deleteById(authenticationSession.getAuthentication_session_id()));
+    }
+
+    private List<AuthenticationSession> findAllAuthenticationSessionsThatAreRelatedToUserAccount(UserAccount userAccount) {
+        return authenticationSessionRepository.findAll()
+                .stream()
+                .filter(authenticationSession -> authenticationSession.getUserAccount().equals(userAccount))
+                .collect(Collectors.toList());
+    }
+
     private void handleUserAccountAuthenticationSession(UserAccount userAccount, String token) {
         List<AuthenticationSession> authenticationSessions = authenticationSessionRepository
                 .findAll()
@@ -93,7 +139,7 @@ public class UserAccountService {
             if (userExistsByEmail)
                 jwtResponse.setEmailExists(true);
 
-            else if (mobileNumberExists == null && !userExistsByEmail && !userExistsByUsername) {
+            else if (mobileNumberExists == null && !userExistsByUsername) {
                 var member = new Member();
                 member.setName(memberDto.getName());
                 member.setMobileNumber(memberDto.getMobileNumber());
@@ -121,10 +167,11 @@ public class UserAccountService {
             }
             return jwtResponse;
 
-        } catch (
-
-        Exception e) {
-            return null;
+        } catch (Exception e) {
+            System.err.println(e.getMessage());
+            jwtResponse.setUserRegisteredSuccess(false);
+            jwtResponse.setExceptionMessage(e.getMessage());
+            return jwtResponse;
         }
     }
 

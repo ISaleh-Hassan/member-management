@@ -22,11 +22,6 @@ function Login(props) {
   const [errorMessage, setErrorMessage] = useState("");
   const navigate = useNavigate();
 
-  useEffect(() => {
-    if (props.isAuthorized) {
-      navigate("/member-administration");
-    }
-  });
   const [showPassword, setShowPassword] = useState(false);
   // Password toggle handler
   const togglePassword = () => {

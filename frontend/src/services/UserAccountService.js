@@ -16,13 +16,34 @@ const UserAccountService = {
         return res.data;
       })
       .catch((err) => {
-        console.log(err);
+        console.error(err);
       });
       return dataPromise;
   },
 
   logoutAsync: async function () {
-    localStorage.removeItem("jwtToken");
+    axios.post(process.env.REACT_APP_BASE_SERVER_URL + "user-accounts/logout?token="+ localStorage.getItem("jwtToken")).then((res) => {
+      if (res.status === 200) {
+        localStorage.removeItem("jwtToken");
+        localStorage.removeItem("isAdmin");
+      }
+    })
+    .catch((err) => {
+      console.error(err);
+    });
+  },
+  validateToken: async function (token) {
+    axios.post(process.env.REACT_APP_BASE_SERVER_URL + "user-accounts/validate-token?token="+ token)
+    .then((res) => {
+      if (res.status === 200) {
+        return res.data
+      }
+      return false
+    })
+    .catch((err) => {
+      console.error(err)
+      return false;
+    });
   },
 
   registerAsync: async function (
