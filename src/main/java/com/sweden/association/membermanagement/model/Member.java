@@ -9,6 +9,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
@@ -34,7 +35,8 @@ public class Member {
     @LazyCollection(LazyCollectionOption.FALSE)
     private List<Payment> payments;
 
-    @OneToOne(mappedBy = "memberUserAccount")
+    @OneToOne()
+    @JoinColumn(name = "user_account_id")
     private UserAccount userAccount;
 
     public long getMemberId() {

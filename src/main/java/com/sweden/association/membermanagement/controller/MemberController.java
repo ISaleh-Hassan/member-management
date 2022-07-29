@@ -38,21 +38,6 @@ public class MemberController {
         }
     }
 
-    @RequestMapping(path="/members/migrate-all", method = RequestMethod.POST, consumes = { "multipart/form-data" })
-    public ResponseEntity<String> migrateAllMembers(@RequestParam MultipartFile selectedFile) {
-        List<Member> members;
-        try {
-            members = MemberHelper.createMembersToMigrate(selectedFile);
-            members.forEach(member -> {
-                memberService.addMember(member);
-            });
-            String message = members.size() + " has been added to the db";
-            return new ResponseEntity<>(message, HttpStatus.OK);
-        } catch (Exception ex){
-            return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
-        }
-    }
-
     @PostMapping("/members")
     public ResponseEntity<String> addMember(@RequestBody Member member) {
         try {

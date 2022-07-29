@@ -1,4 +1,6 @@
 import React from "react";
+import axios from "axios";
+
 import "./App.css";
 import Login from "./components/userAccount/Login";
 import ProtectedRoute from "./routes/ProtectedRoute"
@@ -28,10 +30,16 @@ function App() {
   //TODO: I need to check how to make the endpoint call from here. The endpoint is working but not here
   React.useEffect(() => {
     if(token !== null && token !== undefined){
-      const x = UserAccountService.validateToken(token);
-      x.then(res => setIsAuthorized(res))
+      axios.post(process.env.REACT_APP_BASE_SERVER_URL + "user-accounts/validate-token?token="+ token)
+      .then((res) => {
+        setIsAuthorized(res.data)
+      })
+      .catch((err) => {
+        console.error(err)
+        setIsAuthorized(false);
+      });
     }
-  },[])
+  },[isAuthorized])
   return (
     <div className="App">
       <Navbar routeMap={routeMap} settings={settings} isAuthorized={isAuthorized}/>

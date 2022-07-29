@@ -17,7 +17,7 @@ public class Config {
     @Bean
     public JavaMailSender getJavaMailSender() {
         JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
-        mailSender.setHost("smtp-mail.outlook.com");
+        mailSender.setHost("smtp.gmail.com");
         mailSender.setPort(587);
         mailSender.setUsername(env.getProperty("spring.mail.username"));
         mailSender.setPassword(env.getProperty("spring.mail.password"));

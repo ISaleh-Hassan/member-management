@@ -12,7 +12,7 @@ import { setGlobalState } from "../../state";
 import UserAccountService from "../../services/UserAccountService";
 import useFormValidation from "../../validation/useFormValidation";
 
-export default function Registration(props) {
+export default function Registration() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [mobileNumber, setMobileNumber] = useState("");

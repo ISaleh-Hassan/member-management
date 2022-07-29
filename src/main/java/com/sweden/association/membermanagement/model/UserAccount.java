@@ -35,14 +35,13 @@ public class UserAccount {
     @Column(name = "is_activated", nullable = false)
     private Boolean isActivated;
 
-    @Column(name = "verification_token", nullable = false, unique = true)
+    @Column(name = "verification_token", unique = true)
     private String verificationToken;
 
-    @Column(name = "verification_token_expiry_date", nullable = false)
+    @Column(name = "verification_token_expiry_date")
     private Timestamp verificationTokenExpiryDate;
 
-    @OneToOne(cascade = {CascadeType.ALL})
-    @JoinColumn(name = "member_id")
+    @OneToOne(mappedBy = "userAccount", cascade = {CascadeType.ALL})
     private Member memberUserAccount;
 
     @OneToOne()
@@ -127,5 +126,21 @@ public class UserAccount {
 
     public void setVerificationTokenExpiryDate(Timestamp verificationTokenExpiryDate) {
         this.verificationTokenExpiryDate = verificationTokenExpiryDate;
+    }
+
+    @Override
+    public String toString() {
+        return "UserAccount{" +
+                "userAccountId=" + userAccountId +
+                ", username='" + username + '\'' +
+                ", password='" + password + '\'' +
+                ", email='" + email + '\'' +
+                ", isAdmin=" + isAdmin +
+                ", isActivated=" + isActivated +
+                ", verificationToken='" + verificationToken + '\'' +
+                ", verificationTokenExpiryDate=" + verificationTokenExpiryDate +
+                ", memberUserAccount=" + memberUserAccount +
+                ", userAccountAuthenticationSession=" + userAccountAuthenticationSession +
+                '}';
     }
 }

@@ -38,7 +38,7 @@ const UserAccountService = {
       if (res.status === 200) {
         return res.data
       }
-      return false
+      return res.data
     })
     .catch((err) => {
       console.error(err)

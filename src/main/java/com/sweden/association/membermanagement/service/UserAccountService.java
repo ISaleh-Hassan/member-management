@@ -10,6 +10,7 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -39,6 +40,10 @@ public class UserAccountService {
     private AuthenticationSessionRepository authenticationSessionRepository;
     @Autowired
     private MailService mailService;
+    @Autowired
+    private Environment env;
+
+
 
     public JwtResponse login(String userName, String password) {
         try {
@@ -121,6 +126,34 @@ public class UserAccountService {
         authenticationSession.setToken(token);
         authenticationSession.setTokenExpiryTimestamp(JwtUtility.generateExpirationDate(60L));
         authenticationSessionRepository.save(authenticationSession);
+    }
+
+    //TODO: Since the email function is not working, we will hardcode the root user so that we can test the system.
+    // We can allow the root user to create other users without the need to send email.
+    // When email function is working we can remove this part
+    public void createRootUser(){
+        final String rootUsername = env.getProperty("root.user.username");
+        final String rootUserEmail = env.getProperty("root.user.email");
+        final String rootUserPassword = env.getProperty("root.user.password");
+
+        try {
+            var userAccount = new UserAccount();
+            userAccount.setEmail(rootUserEmail);
+            userAccount.setUserName(rootUserEmail);
+            userAccount.setPassword(rootUserPassword);
+            userAccount.setIsAdmin(true);
+            userAccount.setIsActivated(true);
+            String token = UUID.randomUUID().toString();
+            userAccount.setVerificationToken(token);
+            Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+            int duration = (60 * 60) * 24 * 1000;
+            timestamp.setTime(timestamp.getTime() + duration);
+            userAccount.setVerificationTokenExpiryDate(timestamp);
+            userAccountRepository.save(userAccount);
+            System.out.println("The root user has been created successfully " + userAccount);
+        } catch (Exception ex){
+            System.err.println(ex.getMessage());
+        }
     }
 
     public JwtResponse register(MemberDto memberDto) {

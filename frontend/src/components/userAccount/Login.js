@@ -16,7 +16,7 @@ import InputLabel from "@mui/material/InputLabel";
 import UserAccountService from "../../services/UserAccountService";
 import { Link } from "react-router-dom";
 
-function Login(props) {
+function Login() {
   const [userName, setUserName] = useState("");
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
@@ -84,12 +84,14 @@ function Login(props) {
           <p style={{ color: "red" }}>{errorMessage}</p>
         </Grid>
       ) : null}
-      <Grid item xs={12}>
+{/*       TODO: When the email function is fixed we can allow users to register
+
+<Grid item xs={12}>
         <div>
           Dont have an account? Register
           <Link to="/Registration"> Here</Link>
         </div>
-      </Grid>
+      </Grid> */}
       <Grid item xs={12}>
         <Button
           variant="contained"
