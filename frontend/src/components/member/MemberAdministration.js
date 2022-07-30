@@ -1,6 +1,6 @@
 import React from "react";
 
-export default function MemeberAdministration() {
+export default function MemberAdministration() {
   return (
     <>
     <h2>Only admins should be allwoed to see this page</h2>

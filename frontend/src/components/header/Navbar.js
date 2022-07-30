@@ -12,12 +12,12 @@ import Button from '@mui/material/Button';
 import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import AdbIcon from '@mui/icons-material/Adb';
-import {Link} from 'react-router-dom'
+import { Routes, Route, Link, Navigate, useNavigate } from "react-router-dom";
 import UserAccountService from '../../services/UserAccountService';
 
 
-
 const Navbar = props => {
+  const navigate = useNavigate();
   const [anchorElNav, setAnchorElNav] = React.useState(null);
   const [anchorElUser, setAnchorElUser] = React.useState(null);
 
@@ -35,6 +35,12 @@ const Navbar = props => {
   const handleCloseUserMenu = setting => {
     if(setting === "Logout"){
       UserAccountService.logoutAsync();
+      navigate("/");
+    }
+    else if(setting =="Account"){
+      //navigate to account component
+      //also we have to not reload the page when going to homepage or any other pages
+      //login url is ugly
     }
     setAnchorElUser(null);
   };

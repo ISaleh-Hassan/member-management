@@ -14,15 +14,15 @@ import FilledInput from "@mui/material/FilledInput";
 import OutlinedInput from "@mui/material/OutlinedInput";
 import InputLabel from "@mui/material/InputLabel";
 import UserAccountService from "../../services/UserAccountService";
-import { Link } from "react-router-dom";
+import { Link, Navigate } from "react-router-dom";
+
 
 function Login() {
   const [userName, setUserName] = useState("");
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
-  const navigate = useNavigate();
-
   const [showPassword, setShowPassword] = useState(false);
+  
   // Password toggle handler
   const togglePassword = () => {
     setShowPassword(!showPassword);
